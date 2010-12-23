@@ -3,14 +3,13 @@
 
 #define DMX_PORT _SFR_IO_ADDR(PORTB)
 
-#define R_SEND_STATE r16
 #define SEND_STATE_MTBP 0
 #define SEND_STATE_BREAK 1
 #define SEND_STATE_MAB 2
 
 .section bss
-.lcomm chandata, 2048
 .lcomm send_state, 1	
+.lcomm chandata, 2048
 .text
 	
 #define LOOPS_TO_DELAY (F_CPU / (1000000 * 4) - 1)
@@ -41,29 +40,54 @@ us_loop\@:
 
 .global TIMER0_COMPB_vect
 TIMER0_COMPB_vect:
-	cpi R_SEND_STATE, SEND_STATE_BREAK
+	push XH
+	push XL
+	push r25
+	ldi XH, hi8(send_state)
+	ldi XL, lo8(send_state)
+	ld r25, X
+	cpi r25, SEND_STATE_BREAK
 	breq sendMab
-	cpi R_SEND_STATE, SEND_STATE_MAB
+	cpi r25, SEND_STATE_MAB
 	breq sendStartCode
 sendBreak:
+	ldi r25, SEND_STATE_BREAK
+	st X, r25
 	clr r25
 	out DMX_PORT, r25
-	ldi R_SEND_STATE, SEND_STATE_BREAK
 	ldi r25, 22
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in 88 microseconds
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
+	pop r25
+	pop XL
+	pop XH
 	reti
 sendMab:
+	ldi r25, SEND_STATE_MAB
+	st X, r25
 	ser r25
 	out DMX_PORT, r25
-	ldi R_SEND_STATE, SEND_STATE_MAB
 	ldi r25, 2
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in 8 microseconds
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
+	pop r25
+	pop XL
+	pop XH
 	reti
 sendStartCode:
+	ldi r25, SEND_STATE_MTBP
+	st X, r25
+	clr r25
+	sts TIMSK0, r25                 ; disable compare match B interrupt
+	push r24
+	push r23
+	push r22
+	push r21
+	push r20
+	push r19
+	push r18
 	clr r25
 	out DMX_PORT, r25
 	delay us=35 cycles=8
@@ -112,19 +136,35 @@ sendBit:
 	dec r19
 	brne sendChannel
 	ser r19
-	dec r17
+	dec r18
 	brne sendChannel
-	ldi R_SEND_STATE, SEND_STATE_MTBP
 	ldi r25, 255
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in ~1 millisecond
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
+	ser r25
+	out _SFR_IO_ADDR(TIFR0), r25    ; clear pending timer interrupts
+	ldi r25, 1 << OCIE0B
+	sts TIMSK0, r25                 ; enable compare match B interrupt
+	pop r18
+	pop r19
+	pop r20
+	pop r21
+	pop r22
+	pop r23
+	pop r24
+	pop r25
+	pop XL
+	pop XH
 	reti
 	
 .global InitDMXOut
 InitDMXOut:
 	;; initialize packet send state
-	mov R_SEND_STATE, SEND_STATE_MTBP
+	ldi XH, hi8(send_state)
+	ldi XL, lo8(send_state)
+	ldi r25, SEND_STATE_MTBP
+	st X, r25
 	;; enable and initialize DMX outputs
 	ldi r25, 0b00001111
 	out _SFR_IO_ADDR(DDRB), r25
@@ -132,7 +172,7 @@ InitDMXOut:
 	;; set up timer
 	ldi r25, (1 << CS01) | (1 << CS00)
 	out _SFR_IO_ADDR(TCCR0B), r25   ; 64-cycle (4 microsecond) prescaler
-	clr r25
+	ser r25
 	out _SFR_IO_ADDR(TIFR0), r25    ; clear pending interrupts
 	ldi r25, 0x01
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in 4 microseconds
