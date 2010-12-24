@@ -6,6 +6,7 @@ import socket
 import struct
 import sys
 import threading
+import time
 
 class PacketParseError(Exception):
   """Failed to parse a packet."""
@@ -99,21 +100,26 @@ class SACNListener(object):
       unused_reserved = struct.unpack("!H", it.take(2))[0]
       unused_sequence_number = it.next()
       unuesd_options = it.next()
-    ExpectEq(self._universe - 1, struct.unpack("!H", it.take(2))[0], "Universe")
+    # not checking universe because implementations don't agree on whether they
+    # are numbered from 0 or 1
+    unused_universe = struct.unpack("!H", it.take(2))[0]
 
     unused_dmp_flags = struct.unpack("!H", it.take(2))[0]
     ExpectEq(0x02, it.next(), "DMPVector")
     ExpectEq(0xA1, it.next(), "DMPAddrType")
     if self._protocol == self.PROTOCOL_V2:
-      ExpectEq(0x0000, struct.unpack("!H", it.take(2))[0], "StartCode")
+      start_code = struct.unpack("!H", it.take(2))[0]
       ExpectEq(0x0001, struct.unpack("!H", it.take(2))[0], "AddressIncrement")
       dmx_length = struct.unpack("!H", it.take(2))[0]
     elif self._protocol == self.PROTOCOL_V3:
       ExpectEq(0x0000, struct.unpack("!H", it.take(2))[0], "DMPFirstPropAddr")
       ExpectEq(0x0001, struct.unpack("!H", it.take(2))[0], "AddressIncrement")
       dmx_length = struct.unpack("!H", it.take(2))[0]
-      ExpectEq(0x00, it.next(), "StartCode")
+      start_code = it.next()
+    if start_code != 0:
+      return False
     self._channels = it.take(dmx_length)
+    return True
 
   def _Read(self):
     packet = array.array('B', [0] * 1024)
@@ -122,9 +128,9 @@ class SACNListener(object):
         bytes_received = self._sock.recv_into(packet, 1024)
         logging.debug("Received %d bytes for sACN universe %d",
                       bytes_received, self._universe)
-        self._ParsePacket(packet)
-        if self._callback:
-          self._callback(self._channels)
+        if self._ParsePacket(packet):
+          if self._callback:
+            self._callback(self._channels)
       except PacketParseError, e:
         logging.debug("Packet parse failed: %s", e)
         continue
@@ -141,6 +147,6 @@ if __name__ == "__main__":
   sacn_listener = SACNListener(universe=1, callback=Callback)
   try:
     while True:
-      pass
+      time.sleep(1)
   finally:
     sacn_listener.Stop()
