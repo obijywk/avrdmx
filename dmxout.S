@@ -43,6 +43,8 @@ TIMER0_COMPB_vect:
 	push XH
 	push XL
 	push r25
+	lds r25, SREG
+	push r25
 	ldi XH, hi8(send_state)
 	ldi XL, lo8(send_state)
 	ld r25, X
@@ -60,6 +62,8 @@ sendBreak:
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
 	pop r25
+	sts SREG, r25
+	pop r25
 	pop XL
 	pop XH
 	reti
@@ -72,6 +76,8 @@ sendMab:
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in 8 microseconds
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
+	pop r25
+	sts SREG, r25
 	pop r25
 	pop XL
 	pop XH
@@ -153,6 +159,8 @@ sendBit:
 	pop r22
 	pop r23
 	pop r24
+	pop r25
+	sts SREG, r25
 	pop r25
 	pop XL
 	pop XH
