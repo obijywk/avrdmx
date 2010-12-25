@@ -40,21 +40,17 @@ us_loop\@:
 
 .global TIMER0_COMPB_vect
 TIMER0_COMPB_vect:
-	push XH
-	push XL
 	push r25
 	lds r25, SREG
 	push r25
-	ldi XH, hi8(send_state)
-	ldi XL, lo8(send_state)
-	ld r25, X
+	lds r25, send_state
 	cpi r25, SEND_STATE_BREAK
 	breq sendMab
 	cpi r25, SEND_STATE_MAB
 	breq sendStartCode
 sendBreak:
 	ldi r25, SEND_STATE_BREAK
-	st X, r25
+	sts send_state, r25
 	clr r25
 	out DMX_PORT, r25
 	ldi r25, 22
@@ -64,12 +60,10 @@ sendBreak:
 	pop r25
 	sts SREG, r25
 	pop r25
-	pop XL
-	pop XH
 	reti
 sendMab:
 	ldi r25, SEND_STATE_MAB
-	st X, r25
+	sts send_state, r25
 	ser r25
 	out DMX_PORT, r25
 	ldi r25, 2
@@ -79,14 +73,14 @@ sendMab:
 	pop r25
 	sts SREG, r25
 	pop r25
-	pop XL
-	pop XH
 	reti
 sendStartCode:
 	ldi r25, SEND_STATE_MTBP
-	st X, r25
+	sts send_state, r25
 	clr r25
 	sts TIMSK0, r25                 ; disable compare match B interrupt
+	push XH
+	push XL
 	push r24
 	push r23
 	push r22
@@ -94,15 +88,16 @@ sendStartCode:
 	push r20
 	push r19
 	push r18
+	push r17
 	clr r25
 	out DMX_PORT, r25
 	delay us=35 cycles=8
 	nop
 	ldi XH, hi8(chandata)
 	ldi XL, lo8(chandata)
-	ldi r18, 2                      ; channel counter MSB
-	ser r19                         ; channel counter LSB
-	ldi r20, 8                      ; bit counter
+	ldi r17, 2                      ; channel counter MSB
+	ser r18                         ; channel counter LSB
+	ldi r19, 8                      ; bit counter
 	ser r25
 	out DMX_PORT, r25               ; send stop bits
 	delay cycles=124
@@ -111,26 +106,26 @@ sendStartCode:
 sendChannel:
 	clr r25
 	out DMX_PORT, r25               ; send start bit
+	ld r20, X+
 	ld r21, X+
 	ld r22, X+
 	ld r23, X+
-	ld r24, X+
 	delay cycles=44
 	nop
 	nop
 	nop
 sendBit:
+	lsr r20
+	rol r25
 	lsr r21
 	rol r25
 	lsr r22
 	rol r25
 	lsr r23
 	rol r25
-	lsr r24
-	rol r25
 	out DMX_PORT, r25               ; send channel data bit
 	delay cycles=52
-	dec r20
+	dec r19
 	brne sendBit
 	delay cycles=8
 	ser r25
@@ -138,11 +133,11 @@ sendBit:
 	delay cycles=120
 	nop
 	nop
-	ldi r20, 8
-	dec r19
-	brne sendChannel
-	ser r19
+	ldi r19, 8
 	dec r18
+	brne sendChannel
+	ser r18
+	dec r17
 	brne sendChannel
 	ldi r25, 255
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in ~1 millisecond
@@ -152,6 +147,7 @@ sendBit:
 	out _SFR_IO_ADDR(TIFR0), r25    ; clear pending timer interrupts
 	ldi r25, 1 << OCIE0B
 	sts TIMSK0, r25                 ; enable compare match B interrupt
+	pop r17
 	pop r18
 	pop r19
 	pop r20
@@ -159,20 +155,18 @@ sendBit:
 	pop r22
 	pop r23
 	pop r24
+	pop XL
+	pop XH
 	pop r25
 	sts SREG, r25
 	pop r25
-	pop XL
-	pop XH
 	reti
 	
 .global InitDMXOut
 InitDMXOut:
 	;; initialize packet send state
-	ldi XH, hi8(send_state)
-	ldi XL, lo8(send_state)
 	ldi r25, SEND_STATE_MTBP
-	st X, r25
+	sts send_state, r25
 	;; enable and initialize DMX outputs
 	ldi r25, 0b00001111
 	out _SFR_IO_ADDR(DDRB), r25
