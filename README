@@ -1,1 +1,8 @@
-Atmel AVR firmware for multi-universe DMX output
+Software to use an Atmel AVR microcontroller for multi-universe DMX output.
+
+driver/ contains the driver program that receives streaming ACN
+packets and sends channel data to an Atmel AVR attached via USB.
+
+firmware/ contains the Atmel AVR firmware that receives DMX channel
+data from USB and outputs multiple universes of DMX to physical DMX
+ports.
