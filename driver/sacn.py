@@ -1,4 +1,5 @@
-# Based on http://sacnview.cvs.sourceforge.net/viewvc/sacnview/SACNView/src/StreamingACN.pas?view=markup
+# sACN protocol definition based on http://sacnview.cvs.sourceforge.net
+#   /viewvc/sacnview/SACNView/src/StreamingACN.pas?view=markup
 
 import array
 import logging
@@ -62,7 +63,7 @@ class SACNListener(object):
     self._read_thread = threading.Thread(target=self._Read)
     self._read_thread.start()
 
-  def Stop(self):
+  def Close(self):
     self._active = False
     self._sock.close()
     logging.debug("Stopped listening to sACN universe %d", self._universe)
@@ -149,4 +150,4 @@ if __name__ == "__main__":
     while True:
       time.sleep(1)
   finally:
-    sacn_listener.Stop()
+    sacn_listener.Close()
