@@ -18,24 +18,27 @@ class ArraySliceIterator(object):
     self._i = 0
 
   def next(self):
-    value = self._arr[self._i]
+    result = self._arr[self._i]
     self._i += 1
-    return value
+    return result
 
   def take(self, n):
-    view = self._arr[self._i:self._i + n]
+    result = self._arr[self._i:self._i + n]
     self._i += n
-    return view
+    return result
 
 class SACNListener(object):
   PROTOCOL_V2, PROTOCOL_V3 = range(2)
   _PORT = 5568
 
-  def __init__(self, universe=1, callback=None, protocol=PROTOCOL_V2):
-    self._universe = universe
+  def __init__(self, universes=[1], callback=None, protocol=PROTOCOL_V2,
+               console_universe_offset=1):
+    self._universes = universes
     self._callback = callback
     self._protocol = protocol
-    self._channels = array.array('B', [0] * 512)
+    self._console_universe_offset = console_universe_offset
+    self._channels = dict([(universe, array.array('B', [0] * 512).tostring())
+                           for universe in universes])
 
     self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -46,18 +49,19 @@ class SACNListener(object):
     self._sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_TTL, 20)
     self._sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_LOOP, 1)
     self._sock.bind(("", self._PORT))
-    hi = (universe & 0xFF00) >> 8
-    lo = universe & 0xFF
-    self._universe_ip = "239.255.%d.%d" % (hi, lo)
     intf = socket.gethostbyname(socket.gethostname())
     self._sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF,
                           socket.inet_aton(intf))
-    self._sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
-                          socket.inet_aton(self._universe_ip) +
-                          socket.inet_aton(intf))
+    for universe in universes:
+      hi = (universe & 0xFF00) >> 8
+      lo = universe & 0xFF
+      universe_ip = "239.255.%d.%d" % (hi, lo)
+      self._sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
+                            socket.inet_aton(universe_ip) +
+                            socket.inet_aton(intf))
+      logging.info("Listening to sACN universe %d on %s:%d",
+                   universe, universe_ip, self._PORT)
     self._sock.settimeout(1)
-    logging.debug("Listening to sACN universe %d on %s:%d",
-                  self._universe, self._universe_ip, self._PORT)
 
     self._active = True
     self._read_thread = threading.Thread(target=self._Read)
@@ -66,10 +70,11 @@ class SACNListener(object):
   def Close(self):
     self._active = False
     self._sock.close()
-    logging.debug("Stopped listening to sACN universe %d", self._universe)
+    self._read_thread.join()
+    logging.info("Stopped listening to sACN universes %s", self._universes)
 
-  def GetChannels(self):
-    return self._channels
+  def GetChannels(self, universe=1):
+    return self._channels[universe]
 
   def _ParsePacket(self, packet):
     def ExpectEq(expected, actual, field=None):
@@ -101,9 +106,8 @@ class SACNListener(object):
       unused_reserved = struct.unpack("!H", it.take(2))[0]
       unused_sequence_number = it.next()
       unuesd_options = it.next()
-    # not checking universe because implementations don't agree on whether they
-    # are numbered from 0 or 1
-    unused_universe = struct.unpack("!H", it.take(2))[0]
+    universe = struct.unpack("!H", it.take(2))[0]
+    universe += self._console_universe_offset
 
     unused_dmp_flags = struct.unpack("!H", it.take(2))[0]
     ExpectEq(0x02, it.next(), "DMPVector")
@@ -118,34 +122,35 @@ class SACNListener(object):
       dmx_length = struct.unpack("!H", it.take(2))[0]
       start_code = it.next()
     if start_code != 0:
-      return False
-    self._channels = it.take(dmx_length)
-    return True
+      return -1
+    self._channels[universe] = it.take(dmx_length).tostring()
+    return universe
 
   def _Read(self):
     packet = array.array('B', [0] * 1024)
     while self._active:
       try:
         bytes_received = self._sock.recv_into(packet, 1024)
-        logging.debug("Received %d bytes for sACN universe %d",
-                      bytes_received, self._universe)
-        if self._ParsePacket(packet):
+        universe = self._ParsePacket(packet)
+        logging.debug("sACN listener received %d bytes for universe %d",
+                      bytes_received, universe)
+        if universe != -1:
           if self._callback:
-            self._callback(self._channels)
+            self._callback(universe, self._channels[universe])
       except PacketParseError, e:
-        logging.debug("Packet parse failed: %s", e)
+        logging.error("Packet parse failed: %s", e)
         continue
       except socket.timeout:
         continue
       except socket.error, e:
-        logging.debug("sACN read aborting: %s", e)
+        logging.error("sACN read aborting: %s", e)
         break
 
 if __name__ == "__main__":
   logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-  def Callback(channels):
-    logging.debug(channels[0:8])
-  sacn_listener = SACNListener(universe=1, callback=Callback)
+  def Callback(universe, channels):
+    logging.debug("U%d: %s", universe, channels[0:8].encode("string-escape"))
+  sacn_listener = SACNListener(universes=[1,2], callback=Callback)
   try:
     while True:
       time.sleep(1)

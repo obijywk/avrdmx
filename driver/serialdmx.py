@@ -1,3 +1,4 @@
+import logging
 import serial
 
 class SerialDmx(object):
@@ -6,11 +7,13 @@ class SerialDmx(object):
     self._port = serial.Serial(port=port, dsrdtr=set_dtr)
     if set_dtr:
       self._port.setDTR(True)
+    logging.info("Opened %s for writing DMX data", port)
 
   def Close(self):
     if self._set_dtr:
       self._port.setDTR(False)
     self._port.close()
+    logging.info("Closed DMX output serial port")
 
   def SendChannels(self, channels, universe=1):
     self._port.write(bytes(chr(universe)))
