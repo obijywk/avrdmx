@@ -8,8 +8,8 @@
 #define SEND_STATE_MAB 2
 
 .section bss
-.lcomm send_state, 1	
-.lcomm chandata, 2048
+.comm chandata, 2048
+.lcomm send_state, 1
 .text
 	
 #define LOOPS_TO_DELAY (F_CPU / (1000000 * 4) - 1)
@@ -184,31 +184,3 @@ InitDMXOut:
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
 	sei
 	ret
-
-delay_test:
-	cpi r17, 1
-	delay cycles=4
-	cpi r17, 2
-	delay cycles=8
-	cpi r17, 3
-	delay cycles=12
-	cpi r17, 4
-	delay us=1
-	cpi r17, 5
-	delay us=1 cycles=4
-	cpi r17, 6
-	delay us=1 cycles=8
-	cpi r17, 7
-	delay us=1 cycles=12
-	cpi r17, 8
-	delay us=2
-	cpi r17, 9
-	delay us=2 cycles=4
-	cpi r17, 10
-	delay us=2 cycles=8
-	cpi r17, 11
-	delay us=2 cycles=12
-	cpi r17, 12
-	delay us=3
-	cpi r17, 13
-	delay us=3 cycles=4

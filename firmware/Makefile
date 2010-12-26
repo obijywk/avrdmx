@@ -66,7 +66,7 @@
 # Name of target controller 
 # (e.g. 'at90s8515', see the available avr-gcc mmcu 
 # options for possible values)
-MCU=atmega168
+MCU=at90usb1286
 
 # id to use with programmer
 # default: PROGRAMMER_MCU=$(MCU)
@@ -85,7 +85,7 @@ PROJECTNAME=avrdmx
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=dmxout.S avrdmx.c
+PRJSRC=dmxout.S avrdmx.c usb_serial.c
 
 # additional includes (e.g. -I/path/to/mydir)
 INC=
