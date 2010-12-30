@@ -32,7 +32,7 @@ class SACNListener(object):
   _PORT = 5568
 
   def __init__(self, universes=[1], callback=None, protocol=PROTOCOL_V2,
-               console_universe_offset=1):
+               console_universe_offset=0):
     self._universes = universes
     self._callback = callback
     self._protocol = protocol

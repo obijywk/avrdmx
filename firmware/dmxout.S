@@ -8,7 +8,6 @@
 #define SEND_STATE_MAB 2
 
 .section bss
-.comm chandata, 2048
 .lcomm send_state, 1
 .text
 	
@@ -53,6 +52,8 @@ sendBreak:
 	sts send_state, r25
 	clr r25
 	out DMX_PORT, r25
+	ldi r25, (1 << CS01) | (1 << CS00)
+	out _SFR_IO_ADDR(TCCR0B), r25   ; 64-cycle (4 microsecond) prescaler
 	ldi r25, 22
 	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in 88 microseconds
 	clr r25
@@ -139,8 +140,10 @@ sendBit:
 	ser r18
 	dec r17
 	brne sendChannel
-	ldi r25, 255
-	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in ~1 millisecond
+	ldi r25, (1 << CS02) + (1 << CS00)
+	out _SFR_IO_ADDR(TCCR0B), r25   ; 1024-cycle prescaler
+	ldi r25, 96
+	out _SFR_IO_ADDR(OCR0B), r25    ; run the interrupt in ~6 millisecond
 	clr r25
 	out _SFR_IO_ADDR(TCNT0), r25    ; reset timer
 	ser r25

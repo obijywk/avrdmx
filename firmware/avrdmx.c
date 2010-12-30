@@ -5,7 +5,19 @@
 #include <util/delay.h>
 #include "usb_serial.h"
 
-extern unsigned char* chandata;
+#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
+#define CPU_16MHz       0x00
+#define CPU_8MHz        0x01
+#define CPU_4MHz        0x02
+#define CPU_2MHz        0x03
+#define CPU_1MHz        0x04
+#define CPU_500kHz      0x05
+#define CPU_250kHz      0x06
+#define CPU_125kHz      0x07
+#define CPU_62kHz       0x08
+
+uint8_t chandata[2048];
+
 extern void InitDMXOut(void);
 
 #define DEBUG
@@ -23,6 +35,7 @@ void LOG(const char *str) {
 #endif
 
 int main(void) {
+  CPU_PRESCALE(CPU_16MHz);
   InitDMXOut();
   usb_init();
   while (!usb_configured());
@@ -33,7 +46,7 @@ int main(void) {
     usb_serial_flush_input();
 
     while (1) {
-      unsigned char* position = chandata;
+      uint8_t* position = chandata;
       int16_t universe = usb_serial_getchar();
       if (universe == -1) {
         if (!usb_configured() || !(usb_serial_get_control() & USB_SERIAL_DTR)) {
@@ -48,7 +61,7 @@ int main(void) {
       while (position < chandata + 2048) {
         int16_t channel_level = usb_serial_getchar();
         if (channel_level != -1) {
-          *position = channel_level;
+          *position = (uint8_t)channel_level;
           position += 4;
         } else {
           if (!usb_configured() ||

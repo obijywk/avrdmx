@@ -16,7 +16,10 @@ class SerialDmx(object):
     logging.info("Closed DMX output serial port")
 
   def SendChannels(self, channels, universe=1):
-    self._port.write(bytes(chr(universe)))
+    universe_byte = bytes(chr(universe))
+    logging.debug("universe byte: %s", ord(universe_byte))
+    self._port.write(universe_byte)
+    logging.debug("channels: %d %s", len(channels), [ord(c) for c in channels])
     self._port.write(channels)
 
 if __name__ == "__main__":
