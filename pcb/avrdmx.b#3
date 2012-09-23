@@ -107,7 +107,7 @@
 <wire x1="53.01" y1="20.32" x2="53.01" y2="81.27" width="0" layer="20"/>
 <wire x1="53.01" y1="81.27" x2="0" y2="81.27" width="0" layer="20"/>
 <wire x1="0" y1="81.27" x2="0" y2="20.32" width="0" layer="20"/>
-<text x="49.53" y="24.13" size="1.778" layer="16" rot="MR0">AVR DMX rev1</text>
+<text x="31.75" y="24.13" size="1.778" layer="25" font="fixed">AVR DMX rev1</text>
 </plain>
 <libraries>
 <library name="SparkFun-Boards">
@@ -438,7 +438,7 @@ design rules under a new name.</description>
 <param name="mdCopperDimension" value="10mil"/>
 <param name="mdDrill" value="8mil"/>
 <param name="mdSmdStop" value="0mil"/>
-<param name="msWidth" value="8mil"/>
+<param name="msWidth" value="10mil"/>
 <param name="msDrill" value="20mil"/>
 <param name="msMicroVia" value="9.99mm"/>
 <param name="msBlindViaRatio" value="0.5"/>
