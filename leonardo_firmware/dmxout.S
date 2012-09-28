@@ -78,9 +78,6 @@ _timer0_compa_next:
         in r0, _SFR_IO_ADDR(SREG)  ; 1
         push r0                 ; 2
         push r30                ; 2
-        ;; reload the time - TCNT0 should be 23 here
-        ldi r31, 216            ; 1
-        out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; load our position within the bits buffer
         ldi ZH, hi8(bits)       ; 1
         lds ZL, bits_ptr        ; 2
@@ -92,6 +89,9 @@ _timer0_compa_next:
         breq _timer0_compa_done ; 1 / 2
         ;; store our position within the bits buffer
         sts bits_ptr, ZL        ; 2
+        ;; reload the time
+        ldi r31, 226            ; 1
+        out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
         pop r0                  ; 2
@@ -106,6 +106,9 @@ _timer0_compa_done:
         ;; clear pending timer interrupts
 	ser r31                 ; 1
 	out _SFR_IO_ADDR(TIFR0), r31  ; 1
+        ;; reload the time
+        ldi r31, 229            ; 1
+        out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
         pop r0                  ; 2
@@ -226,6 +229,8 @@ _timer0_compb_prep_channel_loop:
         pop r25                 ; 2
         push r31                ; 2
         nop                     ; 1
+        nop                     ; 1
+        nop                     ; 1
         jmp _timer0_compa_next  ; 3
 _timer0_compb_next_2:
         cpi r25, SEND_STATE_MTBP
@@ -304,7 +309,7 @@ _timer0_compb_clear_bits_loop:
 	ser r25
 	out _SFR_IO_ADDR(TIFR0), r25
         ;; run the interrupt when it's time for the first data bit
-	ldi r25, 220
+	ldi r25, 218
 	out _SFR_IO_ADDR(TCNT0), r25
         ;; output start code
         clr r25                 ; 1
