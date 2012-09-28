@@ -69,7 +69,11 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
 /** Standard file stream for the CDC interface when set up, so that the virtual CDC COM port can be
  *  used like any regular character stream in the C APIs
  */
-static FILE USBSerialStream;
+// extern FILE USBSerialStream;
+
+/** true iff connected.
+ */
+extern bool connected;
 
 /** Array of channel data. Universes are interleaved e.g.
  *    chandata[0] => universe 1, channel 1
@@ -80,11 +84,7 @@ static FILE USBSerialStream;
  *    chandata[5] => universe 2, channel 2
  *    ...
  */
-extern uint8_t chandata[2048];
-
-/** true iff connected.
- */
-bool connected;
+extern uint8_t* chandata;
 
 extern void InitDMXOut(void);
 
@@ -95,7 +95,7 @@ int main(void) {
   SetupHardware();
 
   /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
-  CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
+  // CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
 
   LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
   GlobalInterruptEnable();
@@ -173,4 +173,3 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
 void EVENT_USB_Device_ControlRequest(void) {
   CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
 }
-

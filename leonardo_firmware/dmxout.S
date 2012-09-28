@@ -10,28 +10,30 @@
 
 .section bss
 
+;;; buffer to hold interleaved channel value bits that are ready to be sent
+;;; aligned to a 256-byte boundary so that we don't have to keep a hi byte ptr
+;;; and so that we can test reaching end of buffer by checking a single bit
+.comm bits, 8, 256
+
+;;; pointer to our current lo byte position within the bits buffer
+.comm bits_ptr, 1
+
+;;; determines the portion of the 'slow' timer interrupt that should run next
+;;; set to one of the SEND_STATE_* constants
+.comm send_state, 1
+
+;;; pointer to our current position within the chandata array
+.comm chans_h, 1
+.comm chans_l, 1
+
+;;; connected state, used by avrdmx.c
+.comm connected, 1
+
 ;;; array containing current DMX channel values
 ;;; the 4 universes are interleaved
 ;;; aligned to a 256-byte boundary so that we can check for reaching the end of
 ;;; the array by only comparing the hi byte
-.global chandata
 .comm chandata, 2048, 256
-
-;;; determines the portion of the 'slow' timer interrupt that should run next
-;;; set to one of the SEND_STATE_* constants
-.lcomm send_state, 1
-
-;;; pointer to our current lo byte position within the bits buffer
-.lcomm bits_ptr, 1
-
-;;; pointer to our current position within the chandata array
-.lcomm chans_h, 1
-.lcomm chans_l, 1
-
-;;; buffer to hold interleaved channel value bits that are ready to be sent
-;;; aligned to an 8-byte boundary so that we don't have to keep a hi byte ptr
-.local bits
-.comm bits, 8, 8
 
 .text
 
@@ -62,6 +64,7 @@ us_loop\@:
 .endm
 
 ;;; timer0 COMPA is used for channel value bit send
+;;; SREG is not saved - do not use any instructions that clobber it!
 .global TIMER0_COMPA_vect
 TIMER0_COMPA_vect:
         ;; save registers
@@ -75,8 +78,6 @@ TIMER0_COMPA_vect:
         rjmp _timer0_compa_next ; 2
 _timer0_compa_next:
         ;; save more registers
-        in r0, _SFR_IO_ADDR(SREG)  ; 1
-        push r0                 ; 2
         push r30                ; 2
         ;; load our position within the bits buffer
         ldi ZH, hi8(bits)       ; 1
@@ -85,17 +86,15 @@ _timer0_compa_next:
         ld r0, Z+               ; 2
         out DMX_PORT, r0        ; 1
         ;; check if we've sent 8 bits
-        cpi ZL, lo8(bits + 8)   ; 1
-        breq _timer0_compa_done ; 1 / 2
+	sbrc ZL, 3		; 1 / 2
+	rjmp _timer0_compa_done	; 2
         ;; store our position within the bits buffer
         sts bits_ptr, ZL        ; 2
         ;; reload the time
-        ldi r31, 226            ; 1
+        ldi r31, 223            ; 1
         out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
-        pop r0                  ; 2
-        out _SFR_IO_ADDR(SREG), r0  ; 1
         pop r31                 ; 2
         pop r0                  ; 2
         reti                    ; 5
@@ -111,8 +110,6 @@ _timer0_compa_done:
         out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
-        pop r0                  ; 2
-        out _SFR_IO_ADDR(SREG), r0  ; 1
         pop r31                 ; 2
         pop r0                  ; 2
         reti                    ; 5
@@ -228,7 +225,7 @@ _timer0_compb_prep_channel_loop:
         out _SFR_IO_ADDR(SREG), r0  ; 1
         pop r25                 ; 2
         push r31                ; 2
-        nop                     ; 1
+	delay cycles=4		; 4
         nop                     ; 1
         nop                     ; 1
         jmp _timer0_compa_next  ; 3
@@ -309,7 +306,7 @@ _timer0_compb_clear_bits_loop:
 	ser r25
 	out _SFR_IO_ADDR(TIFR0), r25
         ;; run the interrupt when it's time for the first data bit
-	ldi r25, 218
+	ldi r25, 215
 	out _SFR_IO_ADDR(TCNT0), r25
         ;; output start code
         clr r25                 ; 1
