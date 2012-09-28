@@ -80,7 +80,7 @@ static FILE USBSerialStream;
  *    chandata[5] => universe 2, channel 2
  *    ...
  */
-uint8_t chandata[2048];
+extern uint8_t chandata[2048];
 
 /** true iff connected.
  */
