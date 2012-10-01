@@ -31,7 +31,7 @@ class SACNListener(object):
   PROTOCOL_V2, PROTOCOL_V3 = range(2)
   _PORT = 5568
 
-  def __init__(self, universes=[1], callback=None, protocol=PROTOCOL_V2,
+  def __init__(self, universes=[1], callback=None, protocol=None,
                console_universe_offset=0):
     self._universes = universes
     self._callback = callback
@@ -91,16 +91,26 @@ class SACNListener(object):
     rlp_flags = struct.unpack("!H", it.take(2))[0]
     pdu_length = rlp_flags & 0x0FFF
     ExpectEq(0x7, (rlp_flags & 0xF000) >> 12, "RLPFlags")
-    ExpectEq(0x00000003, struct.unpack("!I", it.take(4))[0], "Vector")
+
+    vector = struct.unpack("!I", it.take(4))[0]
+    if self._protocol:
+      protocol = self._protocol
+    elif vector == 0x03:
+      protocol = self.PROTOCOL_V2
+    elif vector == 0x04:
+      protocol = self.PROTOCOL_V3
+    else:
+      raise PacketParseError("Unknown protocol vector %d", vector)
+
     unused_cid = struct.unpack("!IHHH6s", it.take(16))[0]
 
     unused_fl_flags = struct.unpack("!H", it.take(2))[0]
     ExpectEq(0x00000002, struct.unpack("!I", it.take(4))[0], "FLVector")
-    if self._protocol == self.PROTOCOL_V2:
+    if protocol == self.PROTOCOL_V2:
       unused_source_name = struct.unpack("32s", it.take(32))[0]
       unused_priority = it.next()
       unused_sequence_number = it.next()
-    elif self._protocol == self.PROTOCOL_V3:
+    elif protocol == self.PROTOCOL_V3:
       unused_source_name = struct.unpack("64s", it.take(64))[0]
       unused_priority = it.next()
       unused_reserved = struct.unpack("!H", it.take(2))[0]
@@ -112,11 +122,11 @@ class SACNListener(object):
     unused_dmp_flags = struct.unpack("!H", it.take(2))[0]
     ExpectEq(0x02, it.next(), "DMPVector")
     ExpectEq(0xA1, it.next(), "DMPAddrType")
-    if self._protocol == self.PROTOCOL_V2:
+    if protocol == self.PROTOCOL_V2:
       start_code = struct.unpack("!H", it.take(2))[0]
       ExpectEq(0x0001, struct.unpack("!H", it.take(2))[0], "AddressIncrement")
       dmx_length = struct.unpack("!H", it.take(2))[0]
-    elif self._protocol == self.PROTOCOL_V3:
+    elif protocol == self.PROTOCOL_V3:
       ExpectEq(0x0000, struct.unpack("!H", it.take(2))[0], "DMPFirstPropAddr")
       ExpectEq(0x0001, struct.unpack("!H", it.take(2))[0], "AddressIncrement")
       dmx_length = struct.unpack("!H", it.take(2))[0]
@@ -150,7 +160,7 @@ if __name__ == "__main__":
   logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
   def Callback(universe, channels):
     logging.debug("U%d: %s", universe, channels[0:8].encode("string-escape"))
-  sacn_listener = SACNListener(universes=[1,2], callback=Callback)
+  sacn_listener = SACNListener(universes=[1,2,3,4], callback=Callback)
   try:
     while True:
       time.sleep(1)
