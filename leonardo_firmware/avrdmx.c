@@ -66,11 +66,6 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
     },
   };
 
-/** Standard file stream for the CDC interface when set up, so that the virtual CDC COM port can be
- *  used like any regular character stream in the C APIs
- */
-// extern FILE USBSerialStream;
-
 /** true iff connected.
  */
 extern bool connected;
@@ -84,7 +79,7 @@ extern bool connected;
  *    chandata[5] => universe 2, channel 2
  *    ...
  */
-extern uint8_t* chandata;
+extern uint8_t _chandata[2048];
 
 extern void InitDMXOut(void);
 
@@ -94,9 +89,6 @@ extern void InitDMXOut(void);
 int main(void) {
   SetupHardware();
 
-  /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
-  // CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
-
   LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
   GlobalInterruptEnable();
 
@@ -105,7 +97,7 @@ int main(void) {
     USB_USBTask();
 
     if (connected) {
-      uint8_t* position = chandata;
+      uint8_t* position = _chandata;
       int16_t universe = CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
       if (universe == -1) {
         // just a normal timeout, continue
@@ -113,7 +105,7 @@ int main(void) {
       }
       position += universe;
 
-      while (position < chandata + 2048) {
+      while (position < _chandata + 2048) {
         int16_t channel_level = CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
         if (channel_level != -1) {
           *position = (uint8_t)channel_level;
@@ -144,8 +136,8 @@ void SetupHardware(void) {
 
   /* Hardware Initialization */
   LEDs_Init();
-  InitDMXOut();
   USB_Init();
+  InitDMXOut();
 }
 
 /** Event handler for the library USB Connection event. */

@@ -4,15 +4,11 @@
 #include <string.h>
 #include <stdio.h>
 
-extern uint8_t* chandata;
+extern uint8_t* _chandata;
 extern void InitDMXOut(void);
 
 int main(void) {
   // memset(chandata, 0, 2048);
-  chandata[0] = 1;
-  chandata[1] = 2;
-  chandata[2] = 4;
-  chandata[3] = 8;
 
   InitDMXOut();
 

@@ -133,7 +133,9 @@ class SACNListener(object):
       start_code = it.next()
     if start_code != 0:
       return -1
-    self._channels[universe] = it.take(dmx_length).tostring()
+    self._channels[universe] = (
+      it.take(min(512, dmx_length)) +
+      array.array('B', [0] * max(512 - dmx_length, 0))).tostring()
     return universe
 
   def _Read(self):

@@ -10,11 +10,6 @@
 
 .section bss
 
-;;; buffer to hold interleaved channel value bits that are ready to be sent
-;;; aligned to a 256-byte boundary so that we don't have to keep a hi byte ptr
-;;; and so that we can test reaching end of buffer by checking a single bit
-.comm bits, 8, 256
-
 ;;; pointer to our current lo byte position within the bits buffer
 .comm bits_ptr, 1
 
@@ -33,7 +28,12 @@
 ;;; the 4 universes are interleaved
 ;;; aligned to a 256-byte boundary so that we can check for reaching the end of
 ;;; the array by only comparing the hi byte
-.comm chandata, 2048, 256
+;;;
+;;; the last 8 bytes are a buffer to hold interleaved channel value bits that
+;;; are ready to be sent
+;;; 256-aligned so we can test reaching end of buffer by checking a single bit
+.comm _chandata, 2056, 256
+#define bits _chandata + 2048
 
 .text
 
@@ -91,7 +91,7 @@ _timer0_compa_next:
         ;; store our position within the bits buffer
         sts bits_ptr, ZL        ; 2
         ;; reload the time
-        ldi r31, 223            ; 1
+        ldi r31, 224            ; 1
         out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
@@ -106,7 +106,7 @@ _timer0_compa_done:
 	ser r31                 ; 1
 	out _SFR_IO_ADDR(TIFR0), r31  ; 1
         ;; reload the time
-        ldi r31, 229            ; 1
+        ldi r31, 230            ; 1
         out _SFR_IO_ADDR(TCNT0), r31  ; 1
         ;; restore registers
         pop r30                 ; 2
@@ -143,7 +143,7 @@ _timer0_compb_prep_channel:
         push ZH                 ; 2
         lds ZH, chans_h         ; 2
         ;; stop if we've sent every channel
-        ldi r25, hi8(chandata + 2048)  ; 1
+        ldi r25, hi8(_chandata + 2048)  ; 1
         cpse r25, ZH             ; 1 / 2
         rjmp _timer0_compb_prep_channel_2  ; 2
         jmp _timer0_compb_prep_mtbp  ; 1 / 2
@@ -169,13 +169,13 @@ _timer0_compb_prep_channel_2:
         ldi r21, 7              ; 1
 _timer0_compb_prep_channel_loop:
         ;; copy channel data into bit buffer
-        lsr r25                 ; 1
-	ror r0                  ; 1
-	lsr r24                 ; 1
+        lsr r22                 ; 1
 	ror r0                  ; 1
 	lsr r23                 ; 1
 	ror r0                  ; 1
-	lsr r22                 ; 1
+	lsr r24                 ; 1
+	ror r0                  ; 1
+	lsr r25                 ; 1
 	ror r0                  ; 1
         st Y+, r0               ; 2
         dec r21                 ; 1
@@ -185,13 +185,13 @@ _timer0_compb_prep_channel_loop:
         clr r0                  ; 1
         out DMX_PORT, r0        ; 1
         ;; last iteration of the channel data copy
-        lsr r25                 ; 1
-	ror r0                  ; 1
-	lsr r24                 ; 1
+        lsr r22                 ; 1
 	ror r0                  ; 1
 	lsr r23                 ; 1
 	ror r0                  ; 1
-	lsr r22                 ; 1
+	lsr r24                 ; 1
+	ror r0                  ; 1
+	lsr r25                 ; 1
 	ror r0                  ; 1
         st Y+, r0               ; 2
         ;; restore some registers
@@ -225,7 +225,11 @@ _timer0_compb_prep_channel_loop:
         out _SFR_IO_ADDR(SREG), r0  ; 1
         pop r25                 ; 2
         push r31                ; 2
-	delay cycles=4		; 4
+        nop                     ; 1
+        nop                     ; 1
+        nop                     ; 1
+        nop                     ; 1
+        nop                     ; 1
         nop                     ; 1
         nop                     ; 1
         jmp _timer0_compa_next  ; 3
@@ -276,9 +280,9 @@ _timer0_compb_send_mab:
         reti
 _timer0_compb_send_start_code:
         ;; prepare channel data pointer
-        ldi r25, hi8(chandata)
+        ldi r25, hi8(_chandata)
         sts chans_h, r25
-        ldi r25, lo8(chandata)
+        ldi r25, lo8(_chandata)
         sts chans_l, r25
         ;; prepare bits buffer pointer
         ldi r25, lo8(bits)
@@ -366,7 +370,6 @@ InitDMXOut:
 	ser r25
 	out _SFR_IO_ADDR(TIFR0), r25
         ;; enable COMPB interrupt
-	ldi r25, 1 << OCIE0B
-	sts TIMSK0, r25
-	sei
+        ldi r25, (1 << OCIE0B)
+        sts TIMSK0, r25
 	ret
