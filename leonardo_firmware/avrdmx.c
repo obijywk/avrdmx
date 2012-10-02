@@ -89,6 +89,14 @@ extern void InitDMXOut(void);
 int main(void) {
   SetupHardware();
 
+  // If digital pin 6 (PD7) is low, fill channel data with a distinctive
+  // pattern.
+  DDRD &= 0b01111111;
+  bool fill_with_pattern = bit_is_clear(PIND, 7);
+  if (fill_with_pattern) {
+    memset(_chandata, 0b01010101, 2048);
+  }
+
   LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
   GlobalInterruptEnable();
 
