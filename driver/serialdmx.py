@@ -1,5 +1,6 @@
 import logging
 import serial
+import time
 
 class SerialDmx(object):
   def __init__(self, port=None, set_dtr=True):
@@ -18,10 +19,9 @@ class SerialDmx(object):
   def SendChannels(self, channels, universe=1):
     universe_byte = bytes(chr(universe - 1))
     logging.debug("universe byte: %s", ord(universe_byte))
-    self._port.write(universe_byte)
-    logging.debug("channels: %d %s", len(channels), [ord(c) for c in channels])
     assert len(channels) == 512
-    self._port.write(channels)
+    logging.debug("channels: %d %s", len(channels), [ord(c) for c in channels])
+    self._port.write(universe_byte + channels)
 
 if __name__ == "__main__":
   import os

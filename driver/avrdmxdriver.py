@@ -1,17 +1,22 @@
 import logging
+import platform
 import sacn
 import serialdmx
 import sys
 import time
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   from ctypes import *
   logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
-  serial_dmx = serialdmx.SerialDmx(port="/dev/ttyACM0", set_dtr=True)
-  master_fd = serial_dmx._port.fileno()
-  libc = CDLL("libc.so.6")
-  libc.unlockpt(master_fd)
+  system = platform.system()
+  if system == 'Windows':
+    serial_dmx = serialdmx.SerialDmx(port='COM3', set_dtr=True)
+  elif system == 'Linux':
+    serial_dmx = serialdmx.SerialDmx(port='/dev/ttyACM0', set_dtr=True)
+    master_fd = serial_dmx._port.fileno()
+    libc = CDLL("libc.so.6")
+    libc.unlockpt(master_fd)
 
   universe_fps = {}
   def Callback(universe, channels):
