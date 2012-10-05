@@ -3,6 +3,11 @@
 
 #define DMX_PORT _SFR_IO_ADDR(PORTB)
 
+#define FRAME_RATE 33
+#define FRAME_MICROS 22675
+#define FRAME_WAIT \
+        256 - (1000000 - FRAME_RATE * FRAME_MICROS) / (64 * FRAME_RATE)
+
 #define SEND_STATE_MTBP 0
 #define SEND_STATE_BREAK 1
 #define SEND_STATE_MAB 2
@@ -329,8 +334,8 @@ _timer0_compb_prep_mtbp:
         ;; configure 1024-cycle prescaler
 	ldi r25, (1 << CS02) + (1 << CS00)
 	out _SFR_IO_ADDR(TCCR0B), r25
-        ;; run the interrupt in ~6 milliseconds
-	ldi r25, 162
+        ;; run the interrupt based on FRAME_RATE
+	ldi r25, FRAME_WAIT
 	out _SFR_IO_ADDR(TCNT0), r25
         ;; clear pending timer interrupts
 	ser r25
