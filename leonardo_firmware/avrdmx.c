@@ -48,14 +48,14 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
       .DataINEndpoint           =
       {
         .Address          = CDC_TX_EPADDR,
-        .Size             = CDC_TXRX_EPSIZE,
+        .Size             = CDC_TX_EPSIZE,
         .Banks            = 1,
       },
       .DataOUTEndpoint =
       {
         .Address          = CDC_RX_EPADDR,
-        .Size             = CDC_TXRX_EPSIZE,
-        .Banks            = 1,
+        .Size             = CDC_RX_EPSIZE,
+        .Banks            = 2,
       },
       .NotificationEndpoint =
       {
