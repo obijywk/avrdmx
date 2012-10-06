@@ -52,10 +52,10 @@
 		#define CDC_RX_EPADDR                  (ENDPOINT_DIR_OUT | 4)
 
 		/** Size in bytes of the CDC device-to-host notification IN endpoint. */
-		#define CDC_NOTIFICATION_EPSIZE        8
+		#define CDC_NOTIFICATION_EPSIZE        64
 
 		/** Size in bytes of the CDC data IN endpoint. */
-		#define CDC_TX_EPSIZE                8
+		#define CDC_TX_EPSIZE                64
 
 		/** Size in bytes of the CDC data OUT endpoint. */
 		#define CDC_RX_EPSIZE                64

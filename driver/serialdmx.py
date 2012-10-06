@@ -23,6 +23,13 @@ class SerialDmx(object):
     logging.debug("channels: %d %s", len(channels), [ord(c) for c in channels])
     self._port.write(universe_byte + channels)
 
+  def SendUniverses(self, universes):
+    buf = bytes()
+    for universe, channels in universes.iteritems():
+      buf += bytes(chr(universe - 1))
+      buf += channels
+    self._port.write(buf)
+
 if __name__ == "__main__":
   import os
   from ctypes import *
