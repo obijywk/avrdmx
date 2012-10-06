@@ -3,7 +3,8 @@
 
 #define DMX_PORT _SFR_IO_ADDR(PORTB)
 
-#define FRAME_RATE 26
+;;; FRAME_RATE may be any value from 26 to 43
+#define FRAME_RATE 33
 #define FRAME_MICROS 22675
 #define FRAME_WAIT \
         256 - (1000000 - FRAME_RATE * FRAME_MICROS) / (64 * FRAME_RATE)

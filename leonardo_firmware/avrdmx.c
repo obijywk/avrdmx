@@ -28,64 +28,48 @@
   this software.
 */
 
-/** \file
- *
- *  Main source file for avrdmx. This file contains the main tasks and is
- *  responsible for the initial application hardware configuration.
- */
-
 #include "avrdmx.h"
 
-/** LUFA CDC Class driver interface configuration and state information. This structure is
- *  passed to all CDC Class driver functions, so that multiple instances of the same class
- *  within a device can be differentiated from one another.
- */
-USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface =
-  {
-    .Config =
-    {
-      .ControlInterfaceNumber   = 0,
-      .DataINEndpoint           =
-      {
-        .Address          = CDC_TX_EPADDR,
-        .Size             = CDC_TX_EPSIZE,
-        .Banks            = 1,
-      },
-      .DataOUTEndpoint =
-      {
-        .Address          = CDC_RX_EPADDR,
-        .Size             = CDC_RX_EPSIZE,
-        .Banks            = 2,
-      },
-      .NotificationEndpoint =
-      {
-        .Address          = CDC_NOTIFICATION_EPADDR,
-        .Size             = CDC_NOTIFICATION_EPSIZE,
-        .Banks            = 1,
-      },
+// LUFA CDC Class driver interface configuration and state information. This
+// structure is passed to all CDC Class driver functions, so that multiple
+// instances of the same class within a device can be differentiated from one
+// another.
+USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface = {
+  .Config = {
+    .ControlInterfaceNumber   = 0,
+    .DataINEndpoint           = {
+      .Address          = CDC_TX_EPADDR,
+      .Size             = CDC_TX_EPSIZE,
+      .Banks            = 1,
     },
-  };
+    .DataOUTEndpoint = {
+      .Address          = CDC_RX_EPADDR,
+      .Size             = CDC_RX_EPSIZE,
+      .Banks            = 2,
+    },
+    .NotificationEndpoint = {
+      .Address          = CDC_NOTIFICATION_EPADDR,
+      .Size             = CDC_NOTIFICATION_EPSIZE,
+      .Banks            = 1,
+    },
+  },
+};
 
-/** true iff connected.
- */
+// True iff connected.
 extern bool connected;
 
-/** Array of channel data. Universes are interleaved e.g.
- *    chandata[0] => universe 1, channel 1
- *    chandata[1] => universe 2, channel 1
- *    chandata[2] => universe 3, channel 1
- *    chandata[3] => universe 4, channel 1
- *    chandata[4] => universe 1, channel 2
- *    chandata[5] => universe 2, channel 2
- *    ...
- */
+// Array of channel data. Universes are interleaved e.g.
+//    chandata[0] => universe 1, channel 1
+//    chandata[1] => universe 2, channel 1
+//    chandata[2] => universe 3, channel 1
+//    chandata[3] => universe 4, channel 1
+//    chandata[4] => universe 1, channel 2
+//    chandata[5] => universe 2, channel 2
+//    ...
 extern uint8_t _chandata[2048];
 
 extern void InitDMXOut(void);
 
-/** Main program entry point. This routine contains the overall program flow, including initial
- *  setup of all components and the main program loop.
- */
 int main(void) {
   SetupHardware();
 
@@ -114,7 +98,8 @@ int main(void) {
       position += universe;
 
       while (position < _chandata + 2048) {
-        int16_t channel_level = CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
+        int16_t channel_level =
+            CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
         if (channel_level != -1) {
           *position = (uint8_t)channel_level;
           position += 4;
@@ -131,35 +116,34 @@ int main(void) {
   }
 }
 
-/** Configures the board hardware and chip peripherals for the demo's functionality. */
 void SetupHardware(void) {
   connected = false;
 
-  /* Disable watchdog if enabled by bootloader/fuses */
+  // Disable watchdog if enabled by bootloader/fuses
   MCUSR &= ~(1 << WDRF);
   wdt_disable();
 
-  /* Disable clock division */
+  // Disable clock division
   clock_prescale_set(clock_div_1);
 
-  /* Hardware Initialization */
+  // Hardware Initialization
   LEDs_Init();
   USB_Init();
   InitDMXOut();
 }
 
-/** Event handler for the library USB Connection event. */
+// Event handler for the library USB Connection event.
 void EVENT_USB_Device_Connect(void) {
   LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
 }
 
-/** Event handler for the library USB Disconnection event. */
+// Event handler for the library USB Disconnection event.
 void EVENT_USB_Device_Disconnect(void) {
   connected = false;
   LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
 }
 
-/** Event handler for the library USB Configuration Changed event. */
+// Event handler for the library USB Configuration Changed event.
 void EVENT_USB_Device_ConfigurationChanged(void) {
   bool ConfigSuccess = true;
 
@@ -169,7 +153,7 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
   LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
 }
 
-/** Event handler for the library USB Control Request reception event. */
+// Event handler for the library USB Control Request reception event.
 void EVENT_USB_Device_ControlRequest(void) {
   CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
 }

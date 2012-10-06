@@ -26,7 +26,12 @@ class SerialDmx(object):
   def SendUniverses(self, universes):
     buf = bytes()
     for universe, channels in universes.iteritems():
-      buf += bytes(chr(universe - 1))
+      universe_byte = bytes(chr(universe - 1))
+      logging.debug("universe byte: %s", ord(universe_byte))
+      buf += universe_byte
+      assert len(channels) == 512
+      logging.debug("channels: %d %s", len(channels),
+                    [ord(c) for c in channels])
       buf += channels
     self._port.write(buf)
 
