@@ -39,16 +39,22 @@ if __name__ == '__main__':
                                     callback=ReceiveChannels)
 
   def SendChannels():
-    t = threading.Timer(1.0 / send_frame_rate, SendChannels)
-    t.daemon = True
-    t.start()
+    start = time.clock()
 
     # TODO: better performance from sending universes one at a time, or sending
     # them all at once? use only one of SendUniverses or SendChannels
     serial_dmx.SendUniverses(universe_data)
+
     for universe, channels in universe_data.iteritems():
       # serial_dmx.SendChannels(channels, universe=universe)
       send_fps[universe] = send_fps.get(universe, 0) + 1
+
+    end = time.clock()
+
+    t = threading.Timer((1.0 / send_frame_rate) - (end - start),
+                        SendChannels)
+    t.daemon = True
+    t.start()
 
   SendChannels()
 
