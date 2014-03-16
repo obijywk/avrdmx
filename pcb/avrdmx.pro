@@ -1,13 +1,13 @@
 EAGLE AutoRouter Statistics:
 
-Job           : /home/mattgruskin/projects/avrdmx/pcb/avrdmx.brd
+Job           : /home/matt/eagle/pcb/avrdmx.brd
 
-Start at      : 10:32:01 (9/24/12)
-End at        : 10:32:01 (9/24/12)
+Start at      : 14:31:30 (3/16/14)
+End at        : 14:31:30 (3/16/14)
 Elapsed time  : 00:00:00
 
-Signals       :    22   RoutingGrid: 50 mil  Layers: 2
-Connections   :    54   predefined:  0 ( 0 Vias )
+Signals       :    18   RoutingGrid: 50 mil  Layers: 2
+Connections   :    58   predefined:  6 ( 4 Vias )
 
 Router memory :   14076
 
@@ -18,8 +18,8 @@ Number of Ripups  :         0         0         0         0         0         0
 max. Level        :         0         0         0         0         0         0
 max. Total        :         0         0         0         0         0         0
 
-Routed            :        18        54        54        54        54        54
-Vias              :         0        44         7         5         3         2
-Resolution        :    33.3 %   100.0 %   100.0 %   100.0 %   100.0 %   100.0 %
+Routed            :        13        52        52        52        52        52
+Vias              :         0        40         7         4         0         0
+Resolution        :    32.8 %   100.0 %   100.0 %   100.0 %   100.0 %   100.0 %
 
 Final             : 100.0% finished

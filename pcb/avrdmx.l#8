@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.635" altunitdist="mm" altunit="mm"/>
+<grid distance="0.025" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -22,7 +22,7 @@
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
 <layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
@@ -47,7 +47,7 @@
 <layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
-<layer number="93" name="Pins" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="93" name="Pins" color="2" fill="1" visible="no" active="yes"/>
 <layer number="94" name="Symbols" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="95" name="Names" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
@@ -67,32 +67,8 @@
 <text x="-12.7" y="12.7" size="1.27" layer="25">&gt;Name</text>
 <text x="-12.7" y="-14.605" size="1.27" layer="27">Value</text>
 </package>
-<package name="B3P-VH">
-<pad name="P$1" x="0" y="3.96" drill="1.2" diameter="2.54" rot="R180"/>
-<pad name="P$2" x="0" y="0" drill="1.2" diameter="2.54" rot="R90"/>
-<pad name="P$3" x="0" y="-3.96" drill="1.2" diameter="2.54"/>
-</package>
 </packages>
 <symbols>
-<symbol name="NC5FAV">
-<rectangle x1="-5.08" y1="-7.62" x2="5.08" y2="7.62" layer="94"/>
-<pin name="1" x="-7.62" y="5.08" visible="pin" length="middle" direction="in"/>
-<pin name="2" x="-7.62" y="2.54" visible="pin" length="middle" direction="in"/>
-<pin name="3" x="-7.62" y="0" visible="pin" length="middle" direction="in"/>
-<pin name="4" x="-7.62" y="-2.54" visible="pin" length="middle" direction="in"/>
-<pin name="5" x="-7.62" y="-5.08" visible="pin" length="middle" direction="in"/>
-</symbol>
-<symbol name="B3P-VH">
-<wire x1="-2.54" y1="5.08" x2="-2.54" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-5.08" x2="2.54" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="2.54" y1="-5.08" x2="2.54" y2="5.08" width="0.254" layer="94"/>
-<wire x1="2.54" y1="5.08" x2="-2.54" y2="5.08" width="0.254" layer="94"/>
-<pin name="G" x="-7.62" y="2.54" length="middle"/>
-<pin name="B" x="-7.62" y="0" length="middle"/>
-<pin name="A" x="-7.62" y="-2.54" length="middle"/>
-<text x="-2.54" y="5.08" size="1.27" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-7.62" size="1.27" layer="96">&gt;VALUE</text>
-</symbol>
 </symbols>
 <devicesets>
 <deviceset name="SN75176">
@@ -100,25 +76,6 @@
 </gates>
 <devices>
 <device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="NC5FAV">
-<gates>
-<gate name="G$1" symbol="NC5FAV" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="NC5FAV">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-<connect gate="G$1" pin="3" pad="3"/>
-<connect gate="G$1" pin="4" pad="4"/>
-<connect gate="G$1" pin="5" pad="5"/>
-</connects>
 <technologies>
 <technology name=""/>
 </technologies>
