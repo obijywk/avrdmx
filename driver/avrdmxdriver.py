@@ -1,5 +1,7 @@
 import array
 import logging
+import math
+import midi
 import platform
 import sacn
 import serialdmx
@@ -27,13 +29,34 @@ if __name__ == '__main__':
     libc = CDLL("libc.so.6")
     libc.unlockpt(master_fd)
 
+  try:
+    midi_sender = midi.MidiSender('MolCp3Port 1')
+  except:
+    logging.info('Not sending MIDI')
+    midi_sender = None
+  midi_universe = 1
+  midi_channel = 500
+  midi_cue = None
+
   universe_data = {}
   receive_fps = {}
   send_fps = {}
 
   def ReceiveChannels(universe, channels):
+    global midi_cue
     receive_fps[universe] = receive_fps.get(universe, 0) + 1
     universe_data[universe] = channels
+    if midi_sender is not None and universe == midi_universe:
+      input_cue_float = 100.0 * ord(channels[midi_channel - 1]) / 255.0
+      if input_cue_float - int(input_cue_float) > 0.5:
+        input_cue_float += 1
+      input_cue = int(input_cue_float)
+      if input_cue != midi_cue:
+        midi_cue = input_cue
+        if midi_cue == 0:
+          midi_sender.SendMSCAllOff()
+        else:
+          midi_sender.SendMSCGo(str(midi_cue))
 
   sacn_listener = sacn.SACNListener(universes=universes,
                                     callback=ReceiveChannels)
