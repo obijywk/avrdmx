@@ -1,8 +1,25 @@
-Software to use an Atmel AVR microcontroller for multi-universe DMX output.
+avrdmx is an implementation of multi-universe DMX output using Atmel AVR
+microcontrollers. It's able to output up to 4 universes of DMX simultaneously
+from a single device, without using hardware UARTs - this reduces hardware
+complexity and cost. This project consists of a driver program that runs on a
+host computer, firmware that runs on a board containing an Atmel AVR
+microcontroller, and hardware containing RS-485 driver chips for sending data
+to DMX receivers.
 
-driver/ contains the driver program that receives streaming ACN
-packets and sends channel data to an Atmel AVR attached via USB.
+driver/ contains the Python driver program.  It receives streaming ACN packets
+via UDP, and sends channel data to an Atmel AVR board attached via USB (using
+USB CDC serial port emulation).
 
-firmware/ contains the Atmel AVR firmware that receives DMX channel
-data from USB and outputs multiple universes of DMX to physical DMX
-ports.
+firmware/ contains an Atmel AVR program designed to run on a Teensy++ 2.0 board
+(based on the AT90USB1286).
+
+leonardo_firmware/ contains an Atmel AVR program designed to run on an Arduino
+Leonardo (based on the ATmega32u4). It's based on LUFA
+(http://www.fourwalledcubicle.com/LUFA.php).
+
+Both firmware programs receive and buffer channel data from the driver program,
+and output multiple universes of DMX to physical pins.
+
+pcb/ contains an Eagle CAD design for an Arduino shield that uses RS-485 driver
+chips to drive DMX receivers. It's intended to be used in conjunction with the
+leonardo_firmware.
