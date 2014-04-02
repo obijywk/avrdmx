@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.4">
+<eagle version="6.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1140,15 +1140,18 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <library name="avrdmx">
 <packages>
 <package name="B3P-VH">
-<pad name="G" x="0" y="3.96" drill="1.2" diameter="2.54" rot="R180"/>
-<pad name="B" x="0" y="0" drill="1.2" diameter="2.54" rot="R90"/>
-<pad name="A" x="0" y="-3.96" drill="1.2" diameter="2.54"/>
+<pad name="G" x="0" y="3.96" drill="1.524" diameter="2.54" shape="square" rot="R180"/>
+<pad name="B" x="0" y="0" drill="1.524" diameter="2.54" shape="square" rot="R90"/>
+<pad name="A" x="0" y="-3.96" drill="1.524" diameter="2.54" shape="square"/>
 <wire x1="-5.25" y1="5.91" x2="-5.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="-5.25" y1="-5.91" x2="3.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="-5.91" x2="3.25" y2="5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="5.91" x2="-5.25" y2="5.91" width="0.127" layer="21"/>
 <text x="-5.08" y="6.35" size="1.27" layer="25">&gt;NAME</text>
 <text x="-5.08" y="-7.62" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-4.572" y="3.429" size="0.762" layer="21" font="vector" ratio="15">1 G</text>
+<text x="-4.572" y="-0.381" size="0.762" layer="21" font="vector" ratio="15">2 D-</text>
+<text x="-4.572" y="-4.191" size="0.762" layer="21" font="vector" ratio="15">3 D+</text>
 </package>
 </packages>
 <symbols>
@@ -1331,20 +1334,20 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <part name="P+9" library="supply1" deviceset="VCC" device=""/>
 <part name="P+10" library="supply1" deviceset="VCC" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="DRIVER5" library="751xx" deviceset="75176A" device="P"/>
+<part name="DRIVER_IN" library="751xx" deviceset="75176A" device="P"/>
 <part name="P+11" library="supply1" deviceset="VCC" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="IR1" library="pinhead" deviceset="PINHD-1X3" device="" value="IR IN"/>
+<part name="ANALOG_IN" library="pinhead" deviceset="PINHD-1X3" device="" value="ANALOG IN"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="U$1" library="avrdmx" deviceset="B3P-VH" device=""/>
-<part name="U$2" library="avrdmx" deviceset="B3P-VH" device=""/>
-<part name="U$3" library="avrdmx" deviceset="B3P-VH" device=""/>
-<part name="U$4" library="avrdmx" deviceset="B3P-VH" device=""/>
-<part name="U$5" library="avrdmx" deviceset="B3P-VH" device=""/>
+<part name="DMX1" library="avrdmx" deviceset="B3P-VH" device=""/>
+<part name="DMX2" library="avrdmx" deviceset="B3P-VH" device=""/>
+<part name="DMX3" library="avrdmx" deviceset="B3P-VH" device=""/>
+<part name="DMX4" library="avrdmx" deviceset="B3P-VH" device=""/>
+<part name="DMX_IN" library="avrdmx" deviceset="B3P-VH" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -1368,20 +1371,20 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <instance part="P+9" gate="VCC" x="71.12" y="43.18"/>
 <instance part="P+10" gate="VCC" x="71.12" y="17.78"/>
 <instance part="GND2" gate="1" x="71.12" y="-10.16"/>
-<instance part="DRIVER5" gate="G$1" x="-5.08" y="27.94"/>
+<instance part="DRIVER_IN" gate="G$1" x="-5.08" y="27.94"/>
 <instance part="P+11" gate="VCC" x="10.16" y="38.1"/>
 <instance part="GND6" gate="1" x="-22.86" y="7.62"/>
-<instance part="IR1" gate="A" x="33.02" y="96.52"/>
+<instance part="ANALOG_IN" gate="A" x="33.02" y="96.52"/>
 <instance part="GND7" gate="1" x="27.94" y="81.28"/>
 <instance part="GND8" gate="1" x="38.1" y="76.2"/>
 <instance part="GND9" gate="1" x="38.1" y="50.8"/>
 <instance part="GND10" gate="1" x="38.1" y="25.4"/>
 <instance part="GND11" gate="1" x="38.1" y="0"/>
-<instance part="U$1" gate="G$1" x="83.82" y="81.28"/>
-<instance part="U$2" gate="G$1" x="83.82" y="55.88"/>
-<instance part="U$3" gate="G$1" x="83.82" y="30.48"/>
-<instance part="U$4" gate="G$1" x="83.82" y="5.08"/>
-<instance part="U$5" gate="G$1" x="20.32" y="25.4"/>
+<instance part="DMX1" gate="G$1" x="83.82" y="81.28"/>
+<instance part="DMX2" gate="G$1" x="83.82" y="55.88"/>
+<instance part="DMX3" gate="G$1" x="83.82" y="30.48"/>
+<instance part="DMX4" gate="G$1" x="83.82" y="5.08"/>
+<instance part="DMX_IN" gate="G$1" x="20.32" y="25.4"/>
 </instances>
 <busses>
 </busses>
@@ -1429,31 +1432,32 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="-7.62" y1="53.34" x2="-12.7" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="DRIVER5" gate="G$1" pin="!RE"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="!RE"/>
 <wire x1="-17.78" y1="25.4" x2="-22.86" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="GND6" gate="1" pin="GND"/>
 <wire x1="-22.86" y1="25.4" x2="-22.86" y2="12.7" width="0.1524" layer="91"/>
-<pinref part="DRIVER5" gate="G$1" pin="DE"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="DE"/>
 <wire x1="-22.86" y1="12.7" x2="-22.86" y2="10.16" width="0.1524" layer="91"/>
 <wire x1="-17.78" y1="33.02" x2="-22.86" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="-22.86" y1="33.02" x2="-22.86" y2="30.48" width="0.1524" layer="91"/>
 <junction x="-22.86" y="25.4"/>
-<pinref part="DRIVER5" gate="G$1" pin="GND"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="GND"/>
 <wire x1="-22.86" y1="30.48" x2="-22.86" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="20.32" x2="7.62" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="17.78" x2="7.62" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="20.32" x2="7.62" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="7.62" y1="12.7" x2="-22.86" y2="12.7" width="0.1524" layer="91"/>
 <junction x="-22.86" y="12.7"/>
-<wire x1="12.7" y1="22.86" x2="12.7" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="17.78" x2="7.62" y2="17.78" width="0.1524" layer="91"/>
-<junction x="7.62" y="17.78"/>
-<pinref part="DRIVER5" gate="G$1" pin="D"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="D"/>
 <wire x1="-17.78" y1="30.48" x2="-22.86" y2="30.48" width="0.1524" layer="91"/>
 <junction x="-22.86" y="30.48"/>
-<pinref part="U$5" gate="G$1" pin="A"/>
+<pinref part="DMX_IN" gate="G$1" pin="G"/>
+<wire x1="12.7" y1="27.94" x2="12.7" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="33.02" x2="25.4" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="33.02" x2="25.4" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="12.7" x2="7.62" y2="12.7" width="0.1524" layer="91"/>
+<junction x="7.62" y="12.7"/>
 </segment>
 <segment>
-<pinref part="IR1" gate="A" pin="2"/>
+<pinref part="ANALOG_IN" gate="A" pin="2"/>
 <pinref part="GND7" gate="1" pin="GND"/>
 <wire x1="30.48" y1="96.52" x2="27.94" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="27.94" y1="96.52" x2="27.94" y2="83.82" width="0.1524" layer="91"/>
@@ -1518,10 +1522,10 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="73.66" y1="76.2" x2="73.66" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="68.58" x2="93.98" y2="68.58" width="0.1524" layer="91"/>
 <junction x="93.98" y="68.58"/>
-<pinref part="U$1" gate="G$1" pin="G"/>
-<pinref part="U$2" gate="G$1" pin="G"/>
-<pinref part="U$3" gate="G$1" pin="G"/>
-<pinref part="U$4" gate="G$1" pin="G"/>
+<pinref part="DMX1" gate="G$1" pin="G"/>
+<pinref part="DMX2" gate="G$1" pin="G"/>
+<pinref part="DMX3" gate="G$1" pin="G"/>
+<pinref part="DMX4" gate="G$1" pin="G"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -1542,7 +1546,7 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="43.18" y1="81.28" x2="40.64" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="40.64" y1="81.28" x2="40.64" y2="88.9" width="0.1524" layer="91"/>
 <junction x="40.64" y="88.9"/>
-<pinref part="IR1" gate="A" pin="3"/>
+<pinref part="ANALOG_IN" gate="A" pin="3"/>
 <wire x1="30.48" y1="93.98" x2="30.48" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="88.9" x2="40.64" y2="88.9" width="0.1524" layer="91"/>
 </segment>
@@ -1603,27 +1607,13 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <segment>
 <pinref part="P+11" gate="VCC" pin="VCC"/>
 <wire x1="10.16" y1="35.56" x2="10.16" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="DRIVER5" gate="G$1" pin="VCC"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="VCC"/>
 <wire x1="10.16" y1="33.02" x2="7.62" y2="33.02" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$6" class="0">
-<segment>
-<pinref part="DRIVER5" gate="G$1" pin="A"/>
-<wire x1="7.62" y1="27.94" x2="12.7" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="U$5" gate="G$1" pin="G"/>
-</segment>
-</net>
-<net name="N$7" class="0">
-<segment>
-<pinref part="DRIVER5" gate="G$1" pin="B"/>
-<wire x1="7.62" y1="25.4" x2="12.7" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="U$5" gate="G$1" pin="B"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
-<pinref part="DRIVER5" gate="G$1" pin="R"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="R"/>
 <wire x1="-17.78" y1="22.86" x2="-45.72" y2="22.86" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="22.86" x2="-45.72" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="96.52" x2="20.32" y2="96.52" width="0.1524" layer="91"/>
@@ -1634,7 +1624,7 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 </net>
 <net name="N$5" class="0">
 <segment>
-<pinref part="IR1" gate="A" pin="1"/>
+<pinref part="ANALOG_IN" gate="A" pin="1"/>
 <wire x1="30.48" y1="99.06" x2="-10.16" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="99.06" x2="-10.16" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="A0"/>
@@ -1645,7 +1635,7 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <segment>
 <pinref part="DRIVER1" gate="G$1" pin="B"/>
 <wire x1="68.58" y1="81.28" x2="76.2" y2="81.28" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="B"/>
+<pinref part="DMX1" gate="G$1" pin="B"/>
 </segment>
 </net>
 <net name="N$10" class="0">
@@ -1654,14 +1644,14 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="68.58" y1="83.82" x2="71.12" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="83.82" x2="71.12" y2="78.74" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="78.74" x2="76.2" y2="78.74" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="A"/>
+<pinref part="DMX1" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$11" class="0">
 <segment>
 <pinref part="DRIVER2" gate="G$1" pin="B"/>
 <wire x1="68.58" y1="55.88" x2="76.2" y2="55.88" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="B"/>
+<pinref part="DMX2" gate="G$1" pin="B"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -1670,14 +1660,14 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="68.58" y1="58.42" x2="71.12" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="58.42" x2="71.12" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="53.34" x2="76.2" y2="53.34" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="A"/>
+<pinref part="DMX2" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
 <pinref part="DRIVER3" gate="G$1" pin="B"/>
 <wire x1="68.58" y1="30.48" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="U$3" gate="G$1" pin="B"/>
+<pinref part="DMX3" gate="G$1" pin="B"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -1686,7 +1676,7 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="68.58" y1="33.02" x2="71.12" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="33.02" x2="71.12" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="27.94" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="U$3" gate="G$1" pin="A"/>
+<pinref part="DMX3" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$15" class="0">
@@ -1695,14 +1685,30 @@ Source: http://focus.ti.com/lit/ds/symlink/sn75176a.pdf</description>
 <wire x1="68.58" y1="7.62" x2="71.12" y2="7.62" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="7.62" x2="71.12" y2="2.54" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="2.54" x2="76.2" y2="2.54" width="0.1524" layer="91"/>
-<pinref part="U$4" gate="G$1" pin="A"/>
+<pinref part="DMX4" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$16" class="0">
 <segment>
 <pinref part="DRIVER4" gate="G$1" pin="B"/>
 <wire x1="68.58" y1="5.08" x2="76.2" y2="5.08" width="0.1524" layer="91"/>
-<pinref part="U$4" gate="G$1" pin="B"/>
+<pinref part="DMX4" gate="G$1" pin="B"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="DMX_IN" gate="G$1" pin="B"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="B"/>
+<wire x1="12.7" y1="25.4" x2="7.62" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$17" class="0">
+<segment>
+<pinref part="DMX_IN" gate="G$1" pin="A"/>
+<wire x1="12.7" y1="22.86" x2="10.16" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="22.86" x2="10.16" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="DRIVER_IN" gate="G$1" pin="A"/>
+<wire x1="10.16" y1="27.94" x2="7.62" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
