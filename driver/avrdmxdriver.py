@@ -14,7 +14,10 @@ if __name__ == '__main__':
   logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
   # uncomment this to enable sending of test data
-  # test_data = array.array('B', [127] * 512).tostring()
+  # test_data = [array.array('B', [5] * 512).tostring(),
+  #              array.array('B', [10] * 512).tostring(),
+  #              array.array('B', [15] * 512).tostring(),
+  #              array.array('B', [20] * 512).tostring()]
   test_data = None
 
   universes = [1,2,3,4]
@@ -86,7 +89,7 @@ if __name__ == '__main__':
       if test_data:
         for i in range(send_frame_rate):
           for u in universes:
-            ReceiveChannels(u, test_channels)
+            ReceiveChannels(u, test_data[u-1])
           time.sleep(1.0 / send_frame_rate)
       else:
         time.sleep(1)
