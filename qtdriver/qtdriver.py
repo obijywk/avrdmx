@@ -15,7 +15,10 @@ class MainWindow(QtGui.QWidget):
         self._mutex = QtCore.QMutex()
 
         self._sacn = None
+        self._dmx = None
+        self._dmxTimer = None
         self._display = False
+        self._universeData = {}
 
         self._palIdle = QtGui.QPalette()
         self._palIdle.setColor(
@@ -35,7 +38,6 @@ class MainWindow(QtGui.QWidget):
 
         hbox = QtGui.QHBoxLayout()
 
-        # TODO: add fps indicator
         hbox.addWidget(QtGui.QLabel('sACN In', self))
         self._sacnLights = [QtGui.QLabel('%d' % i, self)
                             for i in xrange(UNIVERSES)]
@@ -46,7 +48,6 @@ class MainWindow(QtGui.QWidget):
             hbox.addWidget(w)
         hbox.addStretch(1)
 
-        # TODO: add fps indicator
         hbox.addWidget(QtGui.QLabel('DMX Out', self))
         self._dmxLights = [QtGui.QLabel('%d' % i, self)
                            for i in xrange(UNIVERSES)]
@@ -55,6 +56,8 @@ class MainWindow(QtGui.QWidget):
             w.setAutoFillBackground(True)
             w.setPalette(self._palIdle)
             hbox.addWidget(w)
+        self._dmxOutWaiting = QtGui.QLabel('outbuf=0', self)
+        hbox.addWidget(self._dmxOutWaiting)
         hbox.addStretch(1)
 
         self._midiLight = QtGui.QLabel('MIDI Out', self)
@@ -86,12 +89,14 @@ class MainWindow(QtGui.QWidget):
         self._dmxButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self._dmxButton.setCheckable(True)
         self._dmxButton.setText('DMX Send')
+        self._dmxButton.toggled.connect(self._toggleDmx)
         hbox.addWidget(self._dmxButton)
 
         self._midiButton = QtGui.QToolButton(self)
         self._midiButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self._midiButton.setCheckable(True)
         self._midiButton.setText('MIDI Send')
+        self._midiButton.toggled.connect(self._toggleMidi)
         hbox.addWidget(self._midiButton)
 
         hbox.addStretch(1)
@@ -134,17 +139,27 @@ class MainWindow(QtGui.QWidget):
         configHbox = QtGui.QHBoxLayout()
         configHbox.addWidget(QtGui.QLabel('Port', dmxConfig))
         self._dmxPort = QtGui.QComboBox(dmxConfig)
+        self._dmxPort.setEditable(True)
+        self._dmxPort.setInsertPolicy(QtGui.QComboBox.InsertAlphabetically)
         self._refreshDmxPorts()
         configHbox.addWidget(self._dmxPort)
-        portRefresh = QtGui.QPushButton('Refresh', dmxConfig)
-        portRefresh.setFocusPolicy(QtCore.Qt.NoFocus)
-        portRefresh.clicked.connect(self._refreshDmxPorts)
-        configHbox.addWidget(portRefresh)
+        self._dmxPortRefresh = QtGui.QPushButton('Refresh', dmxConfig)
+        self._dmxPortRefresh.setFocusPolicy(QtCore.Qt.NoFocus)
+        self._dmxPortRefresh.clicked.connect(self._refreshDmxPorts)
+        configHbox.addWidget(self._dmxPortRefresh)
         configVbox.addLayout(configHbox)
 
         self._dmxSetDtr = QtGui.QCheckBox('Set DTR', dmxConfig)
         self._dmxSetDtr.setChecked(True)
         configVbox.addWidget(self._dmxSetDtr)
+
+        configHbox = QtGui.QHBoxLayout()
+        configHbox.addWidget(QtGui.QLabel('Frame rate', dmxConfig))
+        self._dmxFrameRate = QtGui.QSpinBox(dmxConfig)
+        self._dmxFrameRate.setRange(1, 44)
+        self._dmxFrameRate.setValue(33)
+        configHbox.addWidget(self._dmxFrameRate)
+        configVbox.addLayout(configHbox)
 
         dmxConfig.setLayout(configVbox)
         hbox.addWidget(dmxConfig)
@@ -171,21 +186,27 @@ class MainWindow(QtGui.QWidget):
         self.setLayout(vbox)
         self.show()
 
-        self._timer = QtCore.QTimer(self)
-        self._timer.timeout.connect(self._onTimer)
-        self._timer.start(1000)
+        self._guiTimer = QtCore.QTimer(self)
+        self._guiTimer.timeout.connect(self._onGuiTimer)
+        self._guiTimer.start(500)
 
     def closeEvent(self, event):
         if self._sacn:
             self._sacn.Close()
             self._sacn = None
+        if self._dmx:
+            self._dmx.Close()
+            self._dmx = None
 
-    def _onTimer(self):
+    def _onGuiTimer(self):
         with QtCore.QMutexLocker(self._mutex):
             for l in self._sacnLights:
                 l.setPalette(self._palIdle)
             for l in self._dmxLights:
                 l.setPalette(self._palIdle)
+            if self._dmx:
+                self._dmxOutWaiting.setText(
+                    'outbuf=%d' % self._dmx.OutWaiting())
             self._midiLight.setPalette(self._palIdle)
 
     def _toggleSacn(self, enabled):
@@ -228,19 +249,72 @@ class MainWindow(QtGui.QWidget):
         with QtCore.QMutexLocker(self._mutex):
             self._display = enabled
 
+    def _toggleDmx(self, enabled):
+        if enabled:
+            self._dmxPort.setDisabled(True)
+            self._dmxPortRefresh.setDisabled(True)
+            self._dmxSetDtr.setDisabled(True)
+            self._dmxFrameRate.setDisabled(True)
+            try:
+                dmx = serialdmx.SerialDmx(
+                    port=str(self._dmxPort.currentText()),
+                    set_dtr=self._dmxSetDtr.isChecked())
+                with QtCore.QMutexLocker(self._mutex):
+                    self._dmx = dmx
+                    self._dmxTimer = QtCore.QTimer(self)
+                    self._dmxTimer.timeout.connect(self._onDmxTimer)
+                    self._dmxTimer.start(1000 / self._dmxFrameRate.value())
+            except Exception, e:
+                msg = QtGui.QMessageBox(self)
+                msg.setWindowTitle('Error')
+                msg.setText(str(e))
+                msg.setIcon(QtGui.QMessageBox.Critical)
+                msg.exec_()
+                self._dmxButton.setChecked(False)
+        else:
+            with QtCore.QMutexLocker(self._mutex):
+                dmx = self._dmx
+                self._dmx = None
+                if self._dmxTimer:
+                    self._dmxTimer.stop()
+                    self._dmxTimer = None
+                self._dmxPort.setDisabled(False)
+                self._dmxPortRefresh.setDisabled(False)
+                self._dmxSetDtr.setDisabled(False)
+                self._dmxFrameRate.setDisabled(False)
+            if dmx:
+                dmx.Close()
+
+    def _toggleMidi(self, enabled):
+        pass
+
     def _refreshDmxPorts(self):
         self._dmxPort.clear()
         for port in serialdmx.ListPorts():
             self._dmxPort.addItem(port)
 
-
     def _receiveChannels(self, universe, channels):
         with QtCore.QMutexLocker(self._mutex):
+            self._universeData[universe] = channels
             self._sacnLights[universe-1].setPalette(self._palActive)
             if self._display:
                 text = CHANNEL_DISPLAY_FORMAT.format(
                     *[ord(b) for b in channels])
                 self._channelDisplays[universe-1].setText(text)
+
+    def _onDmxTimer(self):
+        try:
+            with QtCore.QMutexLocker(self._mutex):
+                self._dmx.SendUniverses(self._universeData)
+                for universe in self._universeData.iterkeys():
+                    self._dmxLights[universe-1].setPalette(self._palActive)
+        except Exception, e:
+            self._dmxButton.setChecked(False)
+            msg = QtGui.QMessageBox(self)
+            msg.setWindowTitle('Error')
+            msg.setText(str(e))
+            msg.setIcon(QtGui.QMessageBox.Critical)
+            msg.exec_()
 
 def main():
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)

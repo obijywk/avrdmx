@@ -52,6 +52,12 @@ class SerialDmx(object):
       buf += channels
     self._port.write(buf)
 
+  def OutWaiting(self):
+    if hasattr(self._port, 'outWaiting'):
+      return self._port.outWaiting()
+    else:
+      return 0
+
 if __name__ == "__main__":
   import os
   from ctypes import *
