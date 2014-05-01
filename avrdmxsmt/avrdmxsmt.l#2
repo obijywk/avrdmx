@@ -56,8 +56,6 @@
 </layers>
 <library>
 <packages>
-<package name="SN75174DW">
-</package>
 <package name="SOIC20R">
 <description>&lt;b&gt;20-LeadStandard Small Outline Package SOIC Wide Body (R-20)&lt;/b&gt;&lt;p&gt;
 Source: http://www.analog.com/static/imported-files/data_sheets/AD811.pdf</description>
