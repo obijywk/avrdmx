@@ -1804,9 +1804,9 @@ Please make sure your boards conform to these design rules.</description>
 <element name="AVR" library="SparkFun-DigitalIC" package="SPARKFUN-DIGITALIC_TQFP44" value="ATMEGA32U4TQFP" x="27.94" y="16.51">
 <attribute name="PROD_ID" value="IC-11161" x="48.26" y="-7.62" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R1" library="rcl" package="R0603" value="10K" x="34.29" y="29.464" smashed="yes" rot="R90">
-<attribute name="NAME" x="33.655" y="28.829" size="0.635" layer="25" rot="R90"/>
-<attribute name="VALUE" x="36.195" y="28.829" size="1.27" layer="27" rot="R90"/>
+<element name="R1" library="rcl" package="R0603" value="10K" x="25.4" y="24.638" smashed="yes">
+<attribute name="NAME" x="24.765" y="25.273" size="0.635" layer="25"/>
+<attribute name="VALUE" x="24.765" y="22.733" size="1.27" layer="27"/>
 </element>
 <element name="RESET" library="SparkFun-Electromechanical" package="TACTILE_SWITCH_TALL" value="SWITCH-MOMENTARY-2SMD-4" x="25.1" y="29.21">
 <attribute name="PROD_ID" value="SWCH-11966" x="55.58" y="-16.51" size="1.778" layer="27" display="off"/>
@@ -1888,7 +1888,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="J1" library="SparkFun-Connectors" package="2X3" value="AVR_SPI_PRG_6PTH" x="37.592" y="1.524" smashed="yes">
 <attribute name="VALUE" x="36.322" y="-1.651" size="1.27" layer="27"/>
 </element>
-<element name="HWB" library="SparkFun-Passives" package="1X02" value="" x="0.254" y="-5.842"/>
+<element name="HWB" library="SparkFun-Passives" package="1X02" value="" x="33.02" y="28.702" smashed="yes" rot="R90">
+<attribute name="NAME" x="31.4452" y="28.8798" size="0.635" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="36.195" y="27.432" size="1.27" layer="27" rot="R90"/>
+</element>
 </elements>
 <signals>
 <signal name="VCC">
@@ -1909,7 +1912,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="SN75174" pad="5"/>
 <contactref element="R4" pad="1"/>
 <contactref element="J1" pad="2"/>
-<wire x1="31.877" y1="24.525" x2="34.29" y2="30.314" width="0" layer="19" extent="1-1"/>
+<wire x1="31.877" y1="24.525" x2="26.25" y2="24.638" width="0" layer="19" extent="1-1"/>
 <wire x1="31.94" y1="22.31" x2="31.877" y2="24.525" width="0" layer="19" extent="1-1"/>
 <wire x1="23.94" y1="22.31" x2="31.94" y2="22.31" width="0" layer="19" extent="1-1"/>
 <wire x1="22.098" y1="22.493" x2="23.94" y2="22.31" width="0" layer="19" extent="1-1"/>
@@ -1983,14 +1986,14 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="14.224" y1="10.948" x2="22.14" y2="17.31" width="0" layer="19" extent="1-1"/>
 <wire x1="10.31" y1="3.81" x2="14.224" y2="10.948" width="0" layer="19" extent="1-1"/>
 <wire x1="18.288" y1="3.161" x2="10.31" y2="3.81" width="0" layer="19" extent="1-1"/>
-<wire x1="0.254" y1="-5.842" x2="10.31" y2="3.81" width="0" layer="19" extent="1-1"/>
+<wire x1="33.02" y1="28.702" x2="10.31" y2="3.81" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="AVR" pad="13"/>
 <contactref element="R1" pad="1"/>
 <contactref element="RESET" pad="B2"/>
 <contactref element="J1" pad="5"/>
-<wire x1="29.075" y1="31.46" x2="34.29" y2="28.614" width="0" layer="19" extent="1-1"/>
+<wire x1="29.075" y1="31.46" x2="24.55" y2="24.638" width="0" layer="19" extent="1-1"/>
 <wire x1="24.74" y1="10.71" x2="29.075" y2="31.46" width="0" layer="19" extent="1-1"/>
 <wire x1="42.672" y1="1.524" x2="24.74" y2="10.71" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -2141,7 +2144,7 @@ Please make sure your boards conform to these design rules.</description>
 <signal name="N$25">
 <contactref element="AVR" pad="33"/>
 <contactref element="HWB" pad="2"/>
-<wire x1="2.794" y1="-5.842" x2="33.74" y2="20.51" width="0" layer="19" extent="1-1"/>
+<wire x1="33.02" y1="31.242" x2="33.74" y2="20.51" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>

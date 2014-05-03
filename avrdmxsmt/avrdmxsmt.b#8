@@ -1820,7 +1820,7 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="0.889" y="25.273" size="0.635" layer="25" rot="R90"/>
 <attribute name="VALUE" x="3.429" y="25.273" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="F1" library="SparkFun-PowerIC" package="PTC-1206" value="PTCSMD" x="8.255" y="24.892" rot="R270">
+<element name="FUSE" library="SparkFun-PowerIC" package="PTC-1206" value="PTCSMD" x="8.255" y="24.892" rot="R270">
 <attribute name="PROD_ID" value="RES-11150" x="-48.895" y="9.652" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="C1" library="rcl" package="C0603K" value="1uF" x="34.29" y="25.4" smashed="yes" rot="R90">
@@ -1899,7 +1899,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="R1" pad="2"/>
 <contactref element="AVR" pad="2"/>
 <contactref element="AVR" pad="7"/>
-<contactref element="F1" pad="2"/>
+<contactref element="FUSE" pad="2"/>
 <contactref element="C4" pad="1"/>
 <contactref element="C5" pad="1"/>
 <contactref element="C6" pad="1"/>
@@ -2011,7 +2011,7 @@ Please make sure your boards conform to these design rules.</description>
 </signal>
 <signal name="N$6">
 <contactref element="USB" pad="1"/>
-<contactref element="F1" pad="1"/>
+<contactref element="FUSE" pad="1"/>
 <wire x1="8.255" y1="26.292" x2="6.38" y2="29.21" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$4">

@@ -1859,7 +1859,10 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="34.402" y="0.978" size="0.635" layer="25" rot="R90"/>
 <attribute name="VALUE" x="36.702" y="0.978" size="1.016" layer="27" rot="R90"/>
 </element>
-<element name="SN75174" library="avrdmxsmt" package="SOIC20R" value="SN75174DW" x="8.509" y="15.748"/>
+<element name="SN75174" library="avrdmxsmt" package="SOIC20R" value="SN75174DW" x="8.509" y="15.748" smashed="yes">
+<attribute name="NAME" x="1.778" y="14.351" size="0.635" layer="25" rot="R90"/>
+<attribute name="VALUE" x="2.794" y="15.113" size="1.27" layer="27"/>
+</element>
 <element name="DMX1" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="40.64" y="25.146"/>
 <element name="DMX2" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="40.64" y="11.43"/>
 <element name="DMX3" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="27.432" y="3.81" rot="R270"/>

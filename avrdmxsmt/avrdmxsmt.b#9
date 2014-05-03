@@ -1859,7 +1859,7 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="34.402" y="0.978" size="0.635" layer="25" rot="R90"/>
 <attribute name="VALUE" x="36.702" y="0.978" size="1.016" layer="27" rot="R90"/>
 </element>
-<element name="SN1" library="avrdmxsmt" package="SOIC20R" value="SN75174DW" x="8.509" y="15.748"/>
+<element name="SN75174" library="avrdmxsmt" package="SOIC20R" value="SN75174DW" x="8.509" y="15.748"/>
 <element name="DMX1" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="40.64" y="25.146"/>
 <element name="DMX2" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="40.64" y="11.43"/>
 <element name="DMX3" library="avrdmxsmt" package="B3P-VH" value="B3P-VH" x="27.432" y="3.81" rot="R270"/>
@@ -1876,19 +1876,19 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="17.145" y="26.035" size="0.635" layer="25" rot="R90"/>
 <attribute name="VALUE" x="19.685" y="26.035" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="D1" library="SparkFun-LED" package="LED-0603" value="RED" x="12.7" y="30.48">
+<element name="RED" library="SparkFun-LED" package="LED-0603" value="RED" x="12.7" y="30.48">
 <attribute name="PROD_ID" value="DIO-00819" x="31.75" y="-26.67" size="1.778" layer="27" display="off"/>
 </element>
-<element name="D2" library="SparkFun-LED" package="LED-0603" value="GREEN" x="17.78" y="30.48">
+<element name="GREEN" library="SparkFun-LED" package="LED-0603" value="GREEN" x="17.78" y="30.48">
 <attribute name="PROD_ID" value="DIO-00821" x="40.64" y="-26.67" size="1.778" layer="27" display="off"/>
 </element>
-<element name="D3" library="SparkFun-LED" package="LED-0603" value="YELLOW" x="15.24" y="30.48">
+<element name="YELLOW" library="SparkFun-LED" package="LED-0603" value="YELLOW" x="15.24" y="30.48">
 <attribute name="PROD_ID" value="DIO-09003" x="40.64" y="-25.4" size="1.778" layer="27" display="off"/>
 </element>
 <element name="J1" library="SparkFun-Connectors" package="2X3" value="AVR_SPI_PRG_6PTH" x="37.592" y="1.524" smashed="yes">
 <attribute name="VALUE" x="36.322" y="-1.651" size="1.27" layer="27"/>
 </element>
-<element name="JP1" library="SparkFun-Passives" package="1X02" value="" x="0.254" y="-5.842"/>
+<element name="HWB" library="SparkFun-Passives" package="1X02" value="" x="0.254" y="-5.842"/>
 </elements>
 <signals>
 <signal name="VCC">
@@ -1904,9 +1904,9 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="C5" pad="1"/>
 <contactref element="C6" pad="1"/>
 <contactref element="C7" pad="1"/>
-<contactref element="SN1" pad="20"/>
-<contactref element="SN1" pad="15"/>
-<contactref element="SN1" pad="5"/>
+<contactref element="SN75174" pad="20"/>
+<contactref element="SN75174" pad="15"/>
+<contactref element="SN75174" pad="5"/>
 <contactref element="R4" pad="1"/>
 <contactref element="J1" pad="2"/>
 <wire x1="31.877" y1="24.525" x2="34.29" y2="30.314" width="0" layer="19" extent="1-1"/>
@@ -1945,17 +1945,17 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="C5" pad="2"/>
 <contactref element="C6" pad="2"/>
 <contactref element="C7" pad="2"/>
-<contactref element="SN1" pad="10"/>
+<contactref element="SN75174" pad="10"/>
 <contactref element="DMX3" pad="G"/>
 <contactref element="DMX4" pad="G"/>
 <contactref element="DMX2" pad="G"/>
 <contactref element="DMX1" pad="G"/>
 <contactref element="J1" pad="6"/>
-<contactref element="D1" pad="C"/>
-<contactref element="D3" pad="C"/>
-<contactref element="D2" pad="C"/>
+<contactref element="RED" pad="C"/>
+<contactref element="YELLOW" pad="C"/>
+<contactref element="GREEN" pad="C"/>
 <contactref element="AVR" pad="43"/>
-<contactref element="JP1" pad="1"/>
+<contactref element="HWB" pad="1"/>
 <wire x1="34.29" y1="26.275" x2="40.64" y2="29.106" width="0" layer="19" extent="1-1"/>
 <wire x1="31.877" y1="26.275" x2="34.29" y2="26.275" width="0" layer="19" extent="1-1"/>
 <wire x1="29.075" y1="26.96" x2="31.877" y2="26.275" width="0" layer="19" extent="1-1"/>
@@ -2040,77 +2040,77 @@ Please make sure your boards conform to these design rules.</description>
 </signal>
 <signal name="N$10">
 <contactref element="AVR" pad="28"/>
-<contactref element="SN1" pad="1"/>
+<contactref element="SN75174" pad="1"/>
 <wire x1="2.794" y1="10.973" x2="33.74" y2="16.51" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$11">
 <contactref element="AVR" pad="29"/>
-<contactref element="SN1" pad="9"/>
+<contactref element="SN75174" pad="9"/>
 <wire x1="12.954" y1="10.948" x2="33.74" y2="17.31" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$12">
 <contactref element="AVR" pad="30"/>
-<contactref element="SN1" pad="11"/>
+<contactref element="SN75174" pad="11"/>
 <wire x1="14.224" y1="20.548" x2="33.74" y2="18.11" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$13">
 <contactref element="AVR" pad="12"/>
-<contactref element="SN1" pad="19"/>
+<contactref element="SN75174" pad="19"/>
 <wire x1="4.064" y1="20.548" x2="23.94" y2="10.71" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$14">
-<contactref element="SN1" pad="2"/>
+<contactref element="SN75174" pad="2"/>
 <contactref element="DMX1" pad="A"/>
 <wire x1="4.064" y1="10.973" x2="40.64" y2="21.186" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$15">
-<contactref element="SN1" pad="4"/>
+<contactref element="SN75174" pad="4"/>
 <contactref element="DMX1" pad="B"/>
 <wire x1="6.604" y1="10.973" x2="40.64" y2="25.146" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$16">
-<contactref element="SN1" pad="8"/>
+<contactref element="SN75174" pad="8"/>
 <contactref element="DMX2" pad="A"/>
 <wire x1="11.684" y1="10.973" x2="40.64" y2="7.47" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$17">
-<contactref element="SN1" pad="6"/>
+<contactref element="SN75174" pad="6"/>
 <contactref element="DMX2" pad="B"/>
 <wire x1="9.144" y1="10.973" x2="40.64" y2="11.43" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$18">
-<contactref element="SN1" pad="12"/>
+<contactref element="SN75174" pad="12"/>
 <contactref element="DMX3" pad="A"/>
 <wire x1="23.472" y1="3.81" x2="12.954" y2="20.548" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$19">
-<contactref element="SN1" pad="14"/>
+<contactref element="SN75174" pad="14"/>
 <contactref element="DMX3" pad="B"/>
 <wire x1="27.432" y1="3.81" x2="10.414" y2="20.548" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$20">
-<contactref element="SN1" pad="18"/>
+<contactref element="SN75174" pad="18"/>
 <contactref element="DMX4" pad="A"/>
 <wire x1="2.39" y1="3.81" x2="5.334" y2="20.548" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$21">
-<contactref element="SN1" pad="16"/>
+<contactref element="SN75174" pad="16"/>
 <contactref element="DMX4" pad="B"/>
 <wire x1="6.35" y1="3.81" x2="7.874" y2="20.548" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$22">
 <contactref element="R4" pad="2"/>
-<contactref element="D1" pad="A"/>
+<contactref element="RED" pad="A"/>
 <wire x1="12.7" y1="27.52" x2="12.7" y2="29.603" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$23">
 <contactref element="R5" pad="2"/>
-<contactref element="D3" pad="A"/>
+<contactref element="YELLOW" pad="A"/>
 <wire x1="15.24" y1="27.52" x2="15.24" y2="29.603" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$24">
 <contactref element="R6" pad="2"/>
-<contactref element="D2" pad="A"/>
+<contactref element="GREEN" pad="A"/>
 <wire x1="17.78" y1="27.52" x2="17.78" y2="29.603" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$26">
@@ -2140,7 +2140,7 @@ Please make sure your boards conform to these design rules.</description>
 </signal>
 <signal name="N$25">
 <contactref element="AVR" pad="33"/>
-<contactref element="JP1" pad="2"/>
+<contactref element="HWB" pad="2"/>
 <wire x1="2.794" y1="-5.842" x2="33.74" y2="20.51" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>

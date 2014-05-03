@@ -1891,7 +1891,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="J1" library="SparkFun-Connectors" package="2X3" value="AVR_SPI_PRG_6PTH" x="37.592" y="1.524" smashed="yes">
 <attribute name="VALUE" x="36.322" y="-1.651" size="1.27" layer="27"/>
 </element>
-<element name="HWB" library="SparkFun-Passives" package="1X02" value="" x="33.02" y="28.702" smashed="yes" rot="R90">
+<element name="HWB" library="SparkFun-Passives" package="1X02" value="HWB" x="33.02" y="28.702" smashed="yes" rot="R90">
 <attribute name="NAME" x="31.4452" y="28.8798" size="0.635" layer="25" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="36.195" y="27.432" size="1.27" layer="27" rot="R90"/>
 </element>
@@ -1964,6 +1964,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="HWB" pad="1"/>
 <wire x1="34.29" y1="26.275" x2="40.64" y2="29.106" width="0" layer="19" extent="1-1"/>
 <wire x1="31.877" y1="26.275" x2="34.29" y2="26.275" width="0" layer="19" extent="1-1"/>
+<wire x1="33.02" y1="28.702" x2="31.877" y2="26.275" width="0" layer="19" extent="1-1"/>
 <wire x1="29.075" y1="26.96" x2="31.877" y2="26.275" width="0" layer="19" extent="1-1"/>
 <wire x1="31.14" y1="22.31" x2="31.877" y2="26.275" width="0" layer="19" extent="1-1"/>
 <wire x1="25.54" y1="22.31" x2="31.14" y2="22.31" width="0" layer="19" extent="1-1"/>
@@ -1989,7 +1990,6 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="14.224" y1="10.948" x2="22.14" y2="17.31" width="0" layer="19" extent="1-1"/>
 <wire x1="10.31" y1="3.81" x2="14.224" y2="10.948" width="0" layer="19" extent="1-1"/>
 <wire x1="18.288" y1="3.161" x2="10.31" y2="3.81" width="0" layer="19" extent="1-1"/>
-<wire x1="33.02" y1="28.702" x2="10.31" y2="3.81" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="AVR" pad="13"/>
@@ -2147,7 +2147,7 @@ Please make sure your boards conform to these design rules.</description>
 <signal name="N$25">
 <contactref element="AVR" pad="33"/>
 <contactref element="HWB" pad="2"/>
-<wire x1="33.02" y1="31.242" x2="33.74" y2="20.51" width="0" layer="19" extent="1-1"/>
+<wire x1="33.74" y1="20.51" x2="33.02" y2="31.242" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>

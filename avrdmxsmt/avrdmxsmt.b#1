@@ -123,7 +123,7 @@
 <wire x1="44.12" y1="0" x2="44.12" y2="33.01" width="0" layer="20"/>
 <wire x1="44.12" y1="33.01" x2="0" y2="33.01" width="0" layer="20"/>
 <wire x1="0" y1="33.01" x2="0" y2="0" width="0" layer="20"/>
-<text x="10.668" y="23.368" size="1.016" layer="25">AVR DMX rev5</text>
+<text x="9.906" y="23.622" size="0.762" layer="25">AVR DMX rev5</text>
 <hole x="42.926" y="32.004" drill="0.762"/>
 <hole x="1.143" y="10.414" drill="0.762"/>
 <hole x="13.97" y="1.27" drill="0.762"/>
