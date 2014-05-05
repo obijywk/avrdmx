@@ -1,7 +1,10 @@
 import logging
 import platform
 import serial
-from serial.tools import list_ports
+try:
+  from serial.tools import list_ports
+except:
+  list_ports = None
 import time
 
 def ListPorts():
@@ -16,8 +19,10 @@ def ListPorts():
       except serial.SerialException:
         pass
     return ports
-  elif system == 'Linux':
+  elif system == 'Linux' and list_ports:
     return sorted([t[0] for t in list_ports.comports()])
+  else:
+    return []
 
 class SerialDmx(object):
   def __init__(self, port=None, set_dtr=True):
