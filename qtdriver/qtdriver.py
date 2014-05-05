@@ -425,7 +425,7 @@ class MainWindow(QtGui.QWidget):
       self._sacnLights[universe-1].activate()
       if self._display:
         text = CHANNEL_DISPLAY_FORMAT.format(
-          *[ord(b) for b in channels])
+          *[ord(b) for b in self._universeData[universe]])
         self._channelDisplays[universe-1].setText(text)
 
   def _sendMidi(self, universe, channels):
