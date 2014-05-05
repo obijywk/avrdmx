@@ -8,7 +8,46 @@ from PyQt4 import QtGui
 
 UNIVERSES = 4
 CHANNEL_DISPLAY_FORMAT = '\n'.join([' '.join(['{:02X}'] * 32)] * 16)
-DEFAULT_MIDI_PORT = 'MolCp3Port 1'
+IDLE_COLOR = QtGui.QColor(127, 127, 127)
+ACTIVE_COLOR = QtGui.QColor(63, 191, 63)
+LIGHT_TEXT_COLOR = QtGui.QColor(255, 255, 255)
+
+class BlinkLight(QtGui.QWidget):
+  def __init__(self, label, parent):
+    super(BlinkLight, self).__init__(parent)
+    self._label = label
+    self._active = False
+
+  def activate(self):
+    if not self._active:
+      self._active = True
+      self.update()
+
+  def deactivate(self):
+    if self._active:
+      self._active = False
+      self.update()
+
+  def sizeHint(self):
+    fontMetrics = self.fontMetrics()
+    textHeight = fontMetrics.height()
+    textWidth = fontMetrics.width(self._label)
+    return QtCore.QSize(textWidth, textHeight)
+
+  def paintEvent(self, event):
+    painter = QtGui.QPainter(self)
+    painter.setPen(QtCore.Qt.NoPen)
+    if self._active:
+      painter.setBrush(ACTIVE_COLOR)
+    else:
+      painter.setBrush(IDLE_COLOR)
+    painter.drawRect(self.rect())
+    painter.setPen(LIGHT_TEXT_COLOR)
+    fontMetrics = self.fontMetrics()
+    painter.drawText(
+        0,
+        self.height() - fontMetrics.descent() - 1,
+        self._label)
 
 class MainWindow(QtGui.QWidget):
     def __init__(self):
@@ -23,18 +62,6 @@ class MainWindow(QtGui.QWidget):
         self._display = False
         self._universeData = {}
 
-        self._palIdle = QtGui.QPalette()
-        self._palIdle.setColor(
-            QtGui.QPalette.Window, QtGui.QColor(127, 127, 127))
-        self._palIdle.setColor(
-            QtGui.QPalette.WindowText, QtGui.QColor(255, 255, 255))
-
-        self._palActive = QtGui.QPalette()
-        self._palActive.setColor(
-            QtGui.QPalette.Window, QtGui.QColor(63, 191, 63))
-        self._palActive.setColor(
-            QtGui.QPalette.WindowText, QtGui.QColor(255, 255, 255))
-
         self.setWindowTitle('avrdmx Control Panel')
 
         vbox = QtGui.QVBoxLayout()
@@ -42,31 +69,24 @@ class MainWindow(QtGui.QWidget):
         hbox = QtGui.QHBoxLayout()
 
         hbox.addWidget(QtGui.QLabel('sACN In', self))
-        self._sacnLights = [QtGui.QLabel('%d' % i, self)
-                            for i in xrange(UNIVERSES)]
-        for w in self._sacnLights:
-            w.setAlignment(QtCore.Qt.AlignHCenter)
-            w.setAutoFillBackground(True)
-            w.setPalette(self._palIdle)
-            hbox.addWidget(w)
+        self._sacnLights = []
+        for i in xrange(UNIVERSES):
+          l = BlinkLight('%d' % (i + 1), self)
+          hbox.addWidget(l)
+          self._sacnLights.append(l)
         hbox.addStretch(1)
 
         hbox.addWidget(QtGui.QLabel('DMX Out', self))
-        self._dmxLights = [QtGui.QLabel('%d' % i, self)
-                           for i in xrange(UNIVERSES)]
-        for w in self._dmxLights:
-            w.setAlignment(QtCore.Qt.AlignHCenter)
-            w.setAutoFillBackground(True)
-            w.setPalette(self._palIdle)
-            hbox.addWidget(w)
+        self._dmxLights = []
+        for i in xrange(UNIVERSES):
+          l = BlinkLight('%d' % (i + 1), self)
+          hbox.addWidget(l)
+          self._dmxLights.append(l)
         self._dmxOutWaiting = QtGui.QLabel('outbuf=0', self)
         hbox.addWidget(self._dmxOutWaiting)
         hbox.addStretch(1)
 
-        self._midiLight = QtGui.QLabel('MIDI Out', self)
-        self._midiLight.setAlignment(QtCore.Qt.AlignHCenter)
-        self._midiLight.setAutoFillBackground(True)
-        self._midiLight.setPalette(self._palIdle)
+        self._midiLight = BlinkLight('MIDI Out', self)
         hbox.addWidget(self._midiLight)
         hbox.addStretch(1)
 
@@ -186,7 +206,7 @@ class MainWindow(QtGui.QWidget):
         self._midiPortRefresh.clicked.connect(self._refreshMidiPorts)
         configHbox.addWidget(self._midiPortRefresh)
         configVbox.addLayout(configHbox)
-
+        
         configHbox = QtGui.QHBoxLayout()
         configHbox.addWidget(QtGui.QLabel('Universe', self))
         self._midiUniverse = QtGui.QSpinBox(midiConfig)
@@ -221,6 +241,31 @@ class MainWindow(QtGui.QWidget):
         midiConfig.setLayout(configVbox)
         hbox.addWidget(midiConfig)
 
+        dimmerCheck = QtGui.QGroupBox('Dimmer Check', self)
+        configVbox = QtGui.QVBoxLayout()
+
+        self._dimmerCheckEnable = QtGui.QCheckBox('Enable', dimmerCheck)
+        self._dimmerCheckEnable.setChecked(False)
+        configVbox.addWidget(self._dimmerCheckEnable)
+        
+        configHbox = QtGui.QHBoxLayout()
+        configHbox.addWidget(QtGui.QLabel('Universe', dimmerCheck))
+        self._dimmerCheckUniverse = QtGui.QSpinBox(dimmerCheck)
+        self._dimmerCheckUniverse.setRange(1, UNIVERSES)
+        configHbox.addWidget(self._dimmerCheckUniverse)
+        configVbox.addLayout(configHbox)
+
+        configHbox = QtGui.QHBoxLayout()
+        configHbox.addWidget(QtGui.QLabel('Chan', dimmerCheck))
+        self._dimmerCheckChan = QtGui.QSpinBox(dimmerCheck)
+        self._dimmerCheckChan.setRange(1, 512)
+        self._dimmerCheckChan.setValue(1)
+        configHbox.addWidget(self._dimmerCheckChan)
+        configVbox.addLayout(configHbox)
+
+        dimmerCheck.setLayout(configVbox)
+        hbox.addWidget(dimmerCheck)
+        
         hbox.addStretch(1)
 
         vbox.addLayout(hbox)
@@ -258,14 +303,14 @@ class MainWindow(QtGui.QWidget):
 
     def _onGuiTimer(self):
         with QtCore.QMutexLocker(self._mutex):
-            for l in self._sacnLights:
-                l.setPalette(self._palIdle)
-            for l in self._dmxLights:
-                l.setPalette(self._palIdle)
-            if self._dmx:
-                self._dmxOutWaiting.setText(
-                    'outbuf=%d' % self._dmx.OutWaiting())
-            self._midiLight.setPalette(self._palIdle)
+           for l in self._sacnLights:
+               l.deactivate()
+           for l in self._dmxLights:
+               l.deactivate()
+           if self._dmx:
+               self._dmxOutWaiting.setText(
+                   'outbuf=%d' % self._dmx.OutWaiting())
+           self._midiLight.deactivate()
 
     def _toggleSacn(self, enabled):
         if enabled:
@@ -383,7 +428,7 @@ class MainWindow(QtGui.QWidget):
         self._midiPort.clear()
         for port in midi.ListPorts():
             self._midiPort.addItem(port)
-            if port == DEFAULT_MIDI_PORT:
+            if port == 'MolCp3Port 1':
                 self._midiPort.setCurrentIndex(self._midiPort.count() - 1)
 
     def _receiveChannels(self, universe, channels):
@@ -391,7 +436,15 @@ class MainWindow(QtGui.QWidget):
             if self._midi:
                 self._sendMidi(universe, channels)
             self._universeData[universe] = channels
-            self._sacnLights[universe-1].setPalette(self._palActive)
+            
+            if (self._dimmerCheckEnable.isChecked() and
+                self._dimmerCheckUniverse.value() == universe):
+                chan = self._dimmerCheckChan.value() - 1
+                self._universeData[universe] = (
+                    self._universeData[universe][:chan] + chr(255) +
+                    self._universeData[universe][chan+1:])
+                
+            self._sacnLights[universe-1].activate()
             if self._display:
                 text = CHANNEL_DISPLAY_FORMAT.format(
                     *[ord(b) for b in channels])
@@ -404,7 +457,7 @@ class MainWindow(QtGui.QWidget):
             if (ord(channels[resetChan]) > 0 and
                 ord(self._universeData[universe][resetChan]) == 0):
                 self._midi.SendMSCAllOff()
-                self._midiLight.setPalette(self._palActive)
+                self._midiLight.activate()
             else:
                 startChan = self._midiCueChanStart.value() - 1
                 endChan = self._midiCueChanEnd.value() - 1
@@ -412,19 +465,19 @@ class MainWindow(QtGui.QWidget):
                     if (ord(channels[chan]) > 0 and
                         ord(self._universeData[universe][chan]) == 0):
                         self._midi.SendMSCGo(str(chan - startChan + 1))
-                        self._midiLight.setPalette(self._palActive)
+                        self._midiLight.activate()
 
     def _onDmxTimer(self):
         try:
             with QtCore.QMutexLocker(self._mutex):
                 self._dmx.SendUniverses(self._universeData)
                 for universe in self._universeData.iterkeys():
-                    self._dmxLights[universe-1].setPalette(self._palActive)
+                    self._dmxLights[universe-1].activate()
         except Exception, e:
             if self._dmxRetry.isChecked():
                 with QtCore.QMutexLocker(self._mutex):
                     if self._dmx:
-                        logging.info('DMX disconnected: ' + str(e))
+                        logging.info('DMX disconnected')
                         self._dmx.Close()
                         self._dmx = None
                         return
