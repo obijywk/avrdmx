@@ -110,18 +110,18 @@ Source: http://www.analog.com/static/imported-files/data_sheets/AD811.pdf</descr
 <rectangle x1="-5.96" y1="3.8" x2="-5.47" y2="5.3" layer="51"/>
 </package>
 <package name="B3P-VH">
-<pad name="G" x="0" y="3.96" drill="1.2" diameter="2.54" rot="R180"/>
-<pad name="B" x="0" y="0" drill="1.2" diameter="2.54" rot="R90"/>
-<pad name="A" x="0" y="-3.96" drill="1.2" diameter="2.54"/>
+<pad name="G" x="0" y="3.96" drill="1.57" diameter="3" rot="R180"/>
+<pad name="B" x="0" y="0" drill="1.57" diameter="3" rot="R90"/>
+<pad name="A" x="0" y="-3.96" drill="1.57" diameter="3"/>
 <wire x1="-5.25" y1="5.91" x2="-5.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="-5.25" y1="-5.91" x2="3.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="-5.91" x2="3.25" y2="5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="5.91" x2="-5.25" y2="5.91" width="0.127" layer="21"/>
 <text x="-5.08" y="6.35" size="1.27" layer="25">&gt;NAME</text>
 <text x="-5.08" y="-7.62" size="1.27" layer="27">&gt;VALUE</text>
-<text x="-3.302" y="3.302" size="1.27" layer="21">G</text>
-<text x="-3.81" y="-0.762" size="1.27" layer="21">D-</text>
-<text x="-3.81" y="-4.572" size="1.27" layer="21">D+</text>
+<text x="-4.572" y="3.302" size="1.27" layer="21">G</text>
+<text x="-4.572" y="-0.762" size="1.27" layer="21">D-</text>
+<text x="-4.572" y="-4.572" size="1.27" layer="21">D+</text>
 </package>
 </packages>
 <symbols>

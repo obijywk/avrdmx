@@ -11173,16 +11173,16 @@ Source: http://www.analog.com/static/imported-files/data_sheets/AD811.pdf</descr
 <rectangle x1="-5.96" y1="3.8" x2="-5.47" y2="5.3" layer="51"/>
 </package>
 <package name="B3P-VH">
-<pad name="G" x="0" y="3.96" drill="1.2" diameter="2.54" rot="R180"/>
-<pad name="B" x="0" y="0" drill="1.2" diameter="2.54" rot="R90"/>
-<pad name="A" x="0" y="-3.96" drill="1.2" diameter="2.54"/>
+<pad name="G" x="0" y="3.96" drill="1.57" diameter="3" rot="R180"/>
+<pad name="B" x="0" y="0" drill="1.57" diameter="3" rot="R90"/>
+<pad name="A" x="0" y="-3.96" drill="1.57" diameter="3"/>
 <wire x1="-5.25" y1="5.91" x2="-5.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="-5.25" y1="-5.91" x2="3.25" y2="-5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="-5.91" x2="3.25" y2="5.91" width="0.127" layer="21"/>
 <wire x1="3.25" y1="5.91" x2="-5.25" y2="5.91" width="0.127" layer="21"/>
 <text x="-5.08" y="6.35" size="1.27" layer="25">&gt;NAME</text>
 <text x="-5.08" y="-7.62" size="1.27" layer="27">&gt;VALUE</text>
-<text x="-3.302" y="3.302" size="1.27" layer="21">G</text>
+<text x="-3.81" y="3.302" size="1.27" layer="21">G</text>
 <text x="-3.81" y="-0.762" size="1.27" layer="21">D-</text>
 <text x="-3.81" y="-4.572" size="1.27" layer="21">D+</text>
 </package>
@@ -11980,7 +11980,7 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <part name="P+9" library="supply1" deviceset="VCC" device=""/>
 <part name="J1" library="SparkFun-Connectors" deviceset="AVR_SPI_PRG_6" device="PTH"/>
 <part name="P+10" library="supply1" deviceset="VCC" device=""/>
-<part name="HWB" library="SparkFun-Passives" deviceset="JUMPER-2" device="PTH"/>
+<part name="HWB" library="SparkFun-Passives" deviceset="JUMPER-2" device="PTH" value="HWB"/>
 </parts>
 <sheets>
 <sheet>
@@ -12035,7 +12035,7 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <instance part="P+9" gate="VCC" x="106.68" y="78.74"/>
 <instance part="J1" gate="G$1" x="93.98" y="-7.62"/>
 <instance part="P+10" gate="VCC" x="106.68" y="0"/>
-<instance part="HWB" gate="A" x="60.96" y="-5.08" rot="R270"/>
+<instance part="HWB" gate="A" x="60.96" y="-2.54" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -12173,11 +12173,11 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <pinref part="AVR" gate="G$1" pin="GND@43"/>
 <wire x1="45.72" y1="7.62" x2="40.64" y2="7.62" width="0.1524" layer="91"/>
 <junction x="40.64" y="7.62"/>
-<pinref part="HWB" gate="A" pin="1"/>
-<wire x1="58.42" y1="-5.08" x2="55.88" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="-5.08" x2="55.88" y2="0" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="0" x2="40.64" y2="0" width="0.1524" layer="91"/>
 <junction x="40.64" y="0"/>
+<pinref part="HWB" gate="A" pin="1"/>
+<wire x1="58.42" y1="-2.54" x2="55.88" y2="-2.54" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="-2.54" x2="55.88" y2="0" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C4" gate="G$1" pin="2"/>
@@ -12511,8 +12511,10 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <pinref part="AVR" gate="G$1" pin="PE2/!HWB"/>
 <wire x1="45.72" y1="25.4" x2="33.02" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="25.4" x2="33.02" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="-7.62" x2="55.88" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="-7.62" x2="55.88" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="HWB" gate="A" pin="2"/>
-<wire x1="33.02" y1="-7.62" x2="58.42" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="-5.08" x2="58.42" y2="-5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
