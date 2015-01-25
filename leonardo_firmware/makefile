@@ -13,7 +13,8 @@
 
 MCU          = atmega32u4
 ARCH         = AVR8
-BOARD        = LEONARDO
+# set board to LEONARDO for an Arduino Leonardo, or USER for an AVR DMX SMT board
+BOARD        = USER
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
